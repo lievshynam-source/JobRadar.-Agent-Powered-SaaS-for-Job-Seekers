@@ -92,7 +92,7 @@ JobRadar is for:
 
 > Standalone HTML prototypes. No backend, no API, no setup required.
 
-![JobRadar dashboard preview](./jobradar-dashboard%20Strong%20maches.png)
+![JobRadar dashboard preview](./jobradar-onboarding.png)
 
 ## What Is Included
 
