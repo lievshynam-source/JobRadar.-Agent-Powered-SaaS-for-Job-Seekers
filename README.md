@@ -32,17 +32,15 @@ Meanwhile, you are just trying to find a good role, apply early, and not emotion
 
 For employed professionals, there is another layer: they may be open to new opportunities, but they do not want to risk public “Open to Work” visibility.
 
-And yes, tools like Apify, Claude workflows, scraping scripts, cloud setups, and notification systems exist. They are powerful. Proper life savers.
-
-But what about non-technical users?
+And yes, tools like Apify, Claude workflows, scraping scripts, cloud setups, and notification systems - proper life savers, but require some basic tech skills. I want to give the same experience for non-technical users.
 
 ---
 
 ## Product Concept
 
-JobRadar is a simple private job tracking tool for people who want less noise and more control.
+JobRadar is a simple private job tracking tool for people who want to apply for a job. Simple.
 
-Instead of searching the whole internet, users choose the companies they actually care about. The agent monitors those career pages, finds relevant roles, explains why they match, and helps users decide what to save, ignore, or apply to.
+Instead of searching the whole internet, users choose the companies they want to work in. The agent monitors those career pages, finds relevant roles, explains why they match, and helps users decide what to save, ignore, or apply to.
 
 The idea is simple:
 
