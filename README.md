@@ -86,6 +86,15 @@ JobRadar is for:
 
 **Free to use for job seekers.**
 
+## Open Prototype
+
+[Launch Interactive Dashboard Prototype](YOUR-LIVE-DASHBOARD-LINK)
+
+[Launch Onboarding Prototype](YOUR-LIVE-LINK/jobradar-onboarding.html)
+
+> Standalone HTML prototypes. No backend, no API, no setup required.
+>
+> ---
 
 ## What Is Included
 
