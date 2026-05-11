@@ -128,8 +128,6 @@ This case study includes three prototype layers:
    - Job Detail page
    - Agent Activity page
 
-![JobRadar dashboard preview](./jobradar-onboarding.png)
-
 3. **Local agent simulation**
    - Reads local JSON data
    - Simulates company monitoring
