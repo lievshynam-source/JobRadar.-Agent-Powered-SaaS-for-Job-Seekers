@@ -202,6 +202,10 @@ The dashboard includes:
 
 ### 4. Local Agent Simulator
 
+[Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-agent.html)
+
+> Standalone HTML prototype. No backend, no API, no setup required.
+
 The local agent simulator is not a real AI agent yet.
 
 It is a lightweight front-end simulation that makes the product logic testable before building a real backend.
@@ -215,7 +219,7 @@ It simulates:
 - source errors
 - activity logs
 - dashboard state updates
-- save / ignore feedback
+- Save / ignore feedback
 
 
 ## What Is Real vs. Simulated
