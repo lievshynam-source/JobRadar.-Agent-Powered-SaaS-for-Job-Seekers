@@ -11,7 +11,7 @@ It explores agent UX, explainability, and decision-support workflows for a job s
 | Role | Contribution |
 |---|---|
 | **Maryna Lievshyna** | Founder, Product Design Lead, product vision, final decisions |
-| **ChatGPT** | Product logic, UX structure, case study support |
+| **ChatGPT** | PM, UX structure, case study support |
 | **Claude + Cursor** | UI execution, front-end engineering, interactive prototype |
 
 This project was built through an experimental Human–AI triad workflow: close enough to a real product team, but without Zoom calls, endless emails, and meetings that could have been a sentence.
