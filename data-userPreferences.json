@@ -1,0 +1,12 @@
+{
+  "targetTitles": ["UX Lead", "Product Designer", "Head of Design", "Senior Product Designer", "Design Lead"],
+  "preferredLocations": ["Paris", "Remote", "Remote — Europe", "France"],
+  "seniority": ["Senior", "Lead", "Staff", "Head"],
+  "employmentType": ["Full-time"],
+  "includeKeywords": ["AI", "AI products", "Agentic UX", "Design systems", "B2B SaaS", "Accessibility", "HCI", "NLP"],
+  "excludeKeywords": ["Gaming", "e-commerce only", "Junior"],
+  "alertFrequency": "daily",
+  "alertChannels": ["in-app", "email"],
+  "salaryMin": 70000,
+  "salaryMax": 130000
+}
