@@ -101,7 +101,7 @@ This case study includes three prototype layers:
    - Agent Activity / Trust flow
    - Dashboard flow
   
-   - ## Pre-onboarding flow
+- ## Pre-onboarding flow
 
 ![JobRadar onboarding flow](./JobRadar-Pre-Onboarding-Flow.png)
   
@@ -139,7 +139,7 @@ This case study includes three prototype layers:
    - Simulates source issues
    - Supports save / ignore actions
 
-   ## Prototype Layers
+## Prototype Layers
 
 JobRadar was developed in layers, from product logic to coded prototype.
 
