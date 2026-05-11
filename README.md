@@ -51,7 +51,9 @@ The idea is simple:
 
 ## Dashboard Preview
 
-![JobRadar dashboard preview](./screenshots/dashboard-preview.png)
+## Dashboard Preview
+
+![JobRadar dashboard preview](./jobradar-dashboard%20Strong%20maches.png)
 
 The dashboard is designed to answer three questions fast:
 
