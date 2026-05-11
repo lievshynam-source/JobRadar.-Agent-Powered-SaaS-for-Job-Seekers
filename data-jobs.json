@@ -1,0 +1,98 @@
+[
+  {
+    "id": "job-001", "companyId": "mistral",
+    "title": "UX Lead — AI Products", "location": "Paris", "workMode": "Hybrid",
+    "employmentType": "Full-time", "seniority": "Lead",
+    "keywords": ["AI", "AI products", "Design systems", "Agentic UX", "B2B SaaS"],
+    "description": "Own end-to-end design of AI-powered developer tools. Work with product, engineering, and research to define human–AI interaction.",
+    "sourceStatus": "active", "postedDaysAgo": 2
+  },
+  {
+    "id": "job-002", "companyId": "huggingface",
+    "title": "Senior Product Designer", "location": "Paris", "workMode": "Remote",
+    "employmentType": "Full-time", "seniority": "Senior",
+    "keywords": ["AI", "B2B SaaS", "Design systems", "Accessibility"],
+    "description": "Improve the experience of our model hub and developer-facing tools. Focus on clarity and accessibility.",
+    "sourceStatus": "active", "postedDaysAgo": 3
+  },
+  {
+    "id": "job-003", "companyId": "photoroom",
+    "title": "Product Designer, Trust & Safety", "location": "Paris", "workMode": "On-site",
+    "employmentType": "Full-time", "seniority": "Senior",
+    "keywords": ["AI", "Trust", "User research"],
+    "description": "Work on content moderation, abuse prevention, and user protection systems for an AI-powered creative tool.",
+    "sourceStatus": "active", "postedDaysAgo": 5
+  },
+  {
+    "id": "job-004", "companyId": "alan",
+    "title": "Lead UX Designer", "location": "Paris", "workMode": "Hybrid",
+    "employmentType": "Full-time", "seniority": "Lead",
+    "keywords": ["AI", "HealthTech", "Accessibility", "HCI"],
+    "description": "Own patient and clinician experience for a clinical AI assistant. Work with medical professionals and ML engineers.",
+    "sourceStatus": "active", "postedDaysAgo": 1
+  },
+  {
+    "id": "job-005", "companyId": "doctrine",
+    "title": "UX Designer", "location": "Paris", "workMode": "Hybrid",
+    "employmentType": "Full-time", "seniority": "Mid",
+    "keywords": ["LegalTech", "AI", "User research"],
+    "description": "Improve contract analysis and search interfaces for a legal AI platform.",
+    "sourceStatus": "active", "postedDaysAgo": 7
+  },
+  {
+    "id": "job-006", "companyId": "figures",
+    "title": "Head of Product Design", "location": "Paris", "workMode": "Hybrid",
+    "employmentType": "Full-time", "seniority": "Head",
+    "keywords": ["B2B SaaS", "Design systems", "Product strategy"],
+    "description": "Define design vision and lead the design team at a compensation intelligence SaaS platform.",
+    "sourceStatus": "active", "postedDaysAgo": 4
+  },
+  {
+    "id": "job-007", "companyId": "yousign",
+    "title": "Senior Product Designer", "location": "Paris", "workMode": "Hybrid",
+    "employmentType": "Full-time", "seniority": "Senior",
+    "keywords": ["B2B SaaS", "Design systems", "Accessibility"],
+    "description": "Design e-signature and document workflow experiences for a fast-growing B2B SaaS platform.",
+    "sourceStatus": "active", "postedDaysAgo": 6
+  },
+  {
+    "id": "job-008", "companyId": "nabla",
+    "title": "Product Designer", "location": "Paris", "workMode": "On-site",
+    "employmentType": "Full-time", "seniority": "Mid",
+    "keywords": ["HealthTech", "AI", "NLP"],
+    "description": "Design clinical interfaces for a medical AI assistant used by doctors and nurses.",
+    "sourceStatus": "active", "postedDaysAgo": 9
+  },
+  {
+    "id": "job-009", "companyId": "poolside",
+    "title": "UX Researcher", "location": "San Francisco", "workMode": "On-site",
+    "employmentType": "Full-time", "seniority": "Senior",
+    "keywords": ["AI", "User research", "HCI"],
+    "description": "Lead user research for an AI coding assistant startup. US-based, relocation required.",
+    "sourceStatus": "active", "postedDaysAgo": 3
+  },
+  {
+    "id": "job-010", "companyId": "mistral",
+    "title": "Visual Designer", "location": "Paris", "workMode": "Hybrid",
+    "employmentType": "Full-time", "seniority": "Mid",
+    "keywords": ["Brand", "Motion design", "Illustration"],
+    "description": "Create visual assets, illustrations, and motion graphics for Mistral's brand and marketing.",
+    "sourceStatus": "active", "postedDaysAgo": 8
+  },
+  {
+    "id": "job-011", "companyId": "doctrine",
+    "title": "Junior UX Designer", "location": "Paris", "workMode": "Hybrid",
+    "employmentType": "Full-time", "seniority": "Junior",
+    "keywords": ["Junior", "LegalTech", "UI"],
+    "description": "Entry-level design role supporting the UX team at Doctrine.",
+    "sourceStatus": "active", "postedDaysAgo": 2
+  },
+  {
+    "id": "job-012", "companyId": "huggingface",
+    "title": "Product Designer — Developer Tools", "location": "Remote", "workMode": "Remote",
+    "employmentType": "Full-time", "seniority": "Senior",
+    "keywords": ["AI", "Developer tools", "B2B SaaS", "NLP"],
+    "description": "Design the next generation of Hugging Face's developer-facing products. Fully remote.",
+    "sourceStatus": "expired", "postedDaysAgo": 45
+  }
+]
