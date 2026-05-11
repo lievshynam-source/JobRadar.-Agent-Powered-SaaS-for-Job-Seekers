@@ -204,6 +204,11 @@ The dashboard includes:
 
 > Standalone HTML prototype. No backend, no API, no setup required.
 
+jobradar-agent.html
+data-companies.json
+data-jobs.json
+data-userPreferences.json
+
 The local agent simulator is not a real AI agent yet.
 
 It is a lightweight front-end simulation that makes the product logic testable before building a real backend.
