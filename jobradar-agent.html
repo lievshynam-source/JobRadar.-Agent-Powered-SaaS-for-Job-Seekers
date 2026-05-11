@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JobRadar — Agent Simulator</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 13px; background: #EBEBED; color: #111114; line-height: 1.5; min-height: 100vh; }
+
+/* ── PROTO BAR ─────────────────────────────────────────────── */
+#proto-bar { background: #0A0A0C; border-bottom: 1px solid #1A1A1E; padding: 7px 18px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; position: sticky; top: 0; z-index: 200; }
+#proto-bar.hidden { display: none; }
+.proto-label { font-size: 9px; color: #383838; text-transform: uppercase; letter-spacing: .09em; font-family: "SF Mono","Fira Mono",monospace; white-space: nowrap; }
+.proto-sep { width: 1px; height: 16px; background: #1E1E22; flex-shrink: 0; }
+.pb { font-size: 11px; font-family: inherit; padding: 3px 11px; border: 1px solid #404041; border-radius: 20px; background: transparent; color: #B0B0B0; cursor: pointer; transition: all .12s; white-space: nowrap; }
+.pb:hover { border-color: #555; color: #d0d0d0; }
+.pb.active { background: #2B5CF6; border-color: #2B5CF6; color: #fff; }
+.pb.page-btn.active { background: #1C1C20; border-color: #404041; color: #E0E0E0; }
+.agent-run-btn { font-size: 11px; font-family: inherit; padding: 4px 14px; border: 1px solid #22C55E; border-radius: 20px; background: transparent; color: #22C55E; cursor: pointer; transition: all .12s; font-weight: 600; white-space: nowrap; }
+.agent-run-btn:hover { background: rgba(34,197,94,.1); }
+.agent-run-btn.running { border-color: #F59E0B; color: #F59E0B; animation: pulse 1s infinite; }
+.agent-reset-btn { font-size: 11px; font-family: inherit; padding: 4px 12px; border: 1px solid #404041; border-radius: 20px; background: transparent; color: #B0B0B0; cursor: pointer; transition: all .12s; white-space: nowrap; }
+.agent-reset-btn:hover { border-color: #666; color: #ddd; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+.scan-counter { font-size: 9px; color: #444; font-family: "SF Mono","Fira Mono",monospace; }
+.hide-btn { margin-left: auto; font-size: 9px; font-family: "SF Mono","Fira Mono",monospace; padding: 3px 10px; border: 1px solid #2A2A2E; border-radius: 20px; background: transparent; color: #404044; cursor: pointer; }
+.hide-btn:hover { color: #888; }
+#restore-btn { display: none; position: fixed; top: 10px; right: 16px; z-index: 300; font-size: 10px; font-family: "SF Mono","Fira Mono",monospace; padding: 4px 12px; border: 1px solid #333; border-radius: 20px; background: #0A0A0C; color: #666; cursor: pointer; }
+#restore-btn:hover { color: #aaa; }
+
+/* ── APP ───────────────────────────────────────────────────── */
+.app { display: grid; grid-template-columns: 192px 1fr; grid-template-rows: 52px 1fr; min-height: calc(100vh - 41px); }
+.sidebar { grid-row: 1/3; background: #18181B; display: flex; flex-direction: column; }
+.sb-logo { padding: 17px 16px 15px; font-size: 15px; font-weight: 700; color: #F5F5F8; border-bottom: 1px solid #252528; letter-spacing: -.3px; }
+.sb-logo span { color: #3B7EF6; }
+.sb-nav { padding: 8px 0; flex: 1; }
+.ni { display: flex; align-items: center; gap: 9px; padding: 8px 16px; font-size: 12px; color: #888; cursor: pointer; transition: background .1s; }
+.ni:hover { background: #222225; color: #ccc; }
+.ni.active { background: #252529; color: #F5F5F8; font-weight: 500; }
+.ni svg { width: 14px; height: 14px; flex-shrink: 0; opacity: .6; }
+.ni.active svg { opacity: 1; }
+.sb-footer { border-top: 1px solid #252528; padding: 10px 16px 14px; }
+.sb-user { font-size: 10px; color: #3A3A3E; font-family: "SF Mono","Fira Mono",monospace; padding-top: 8px; }
+.topbar { grid-column: 2; background: #fff; border-bottom: 1px solid #E4E4E7; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; }
+.tb-title { font-size: 14px; font-weight: 600; color: #111114; }
+.tb-sub   { font-size: 10px; color: #A8A8B2; font-family: "SF Mono","Fira Mono",monospace; }
+.agent-badge { display: flex; align-items: center; gap: 7px; padding: 5px 13px; border-radius: 20px; font-size: 10px; font-family: "SF Mono","Fira Mono",monospace; font-weight: 500; border: 1px solid; }
+.badge-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.badge-green { background: #F0FBF0; color: #166534; border-color: #4CAF50; }
+.badge-green .badge-dot { background: #4CAF50; }
+.badge-blue  { background: #EEF4FF; color: #1E40AF; border-color: #3B7EF6; }
+.badge-blue  .badge-dot { background: #3B7EF6; }
+.badge-amber { background: #FFFBEB; color: #92400E; border-color: #F59E0B; }
+.badge-amber .badge-dot { background: #F59E0B; }
+.main { grid-column: 2; padding: 20px 22px 32px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; background: #F4F4F6; }
+
+/* ── COMPONENTS ────────────────────────────────────────────── */
+.banner { padding: 9px 13px; border-radius: 8px; font-size: 11px; display: flex; gap: 9px; align-items: flex-start; line-height: 1.6; border: 1px solid; }
+.banner-info { background: #EEF4FF; color: #1E3A8A; border-color: #BFDBFE; }
+.banner-warn { background: #FFFBEB; color: #78350F; border-color: #FDE68A; }
+.card { background: #fff; border: 1px solid #E4E4E7; border-radius: 10px; padding: 14px 16px; }
+.card-accent { border-left: 3px solid #3B7EF6; border-radius: 0 10px 10px 0; }
+.mhd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.mlabel { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #9A9AA8; }
+.mlink { font-size: 10px; color: #3B7EF6; cursor: pointer; font-weight: 500; }
+.mlink:hover { text-decoration: underline; }
+.sh { font-size: 13px; font-weight: 600; color: #111114; margin-bottom: 4px; line-height: 1.4; }
+.ss { font-size: 11px; color: #5A5A68; line-height: 1.6; }
+.sm { font-size: 9px; color: #B8B8C2; font-family: "SF Mono","Fira Mono",monospace; margin-top: 8px; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+.col { display: flex; flex-direction: column; gap: 14px; }
+.pill { font-size: 9px; font-weight: 600; padding: 3px 8px; border-radius: 4px; white-space: nowrap; font-family: "SF Mono","Fira Mono",monospace; flex-shrink: 0; }
+.g  { background: #F0FBF0; color: #166534; }
+.bl { background: #EEF4FF; color: #1E40AF; }
+.am { background: #FFFBEB; color: #92400E; }
+.pu { background: #F5F3FF; color: #5B21B6; }
+.gr { background: #F2F2F5; color: #484856; }
+.mscore { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 4px; font-family: "SF Mono","Fira Mono",monospace; }
+.hi  { background: #F0FBF0; color: #166534; }
+.mid { background: #FFFBEB; color: #92400E; }
+.lo  { background: #F4F4F6; color: #525260; }
+.btn { font-size: 9px; font-family: inherit; padding: 3px 9px; border: 1px solid #E0E0E8; border-radius: 4px; background: #fff; color: #5A5A68; cursor: pointer; transition: all .1s; white-space: nowrap; }
+.btn:hover { background: #F4F4F6; }
+.btn.p { background: #3B7EF6; border-color: #3B7EF6; color: #fff; }
+.btn.p:hover { background: #2563EB; }
+.btn.ignored { background: #F4F4F6; border-color: #E0E0E0; color: #B0B0B8; cursor: default; }
+.empty { background: #F8F8FA; border: 1px dashed #D4D4DC; border-radius: 8px; padding: 15px 13px; }
+.prow { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.pt { flex: 1; height: 4px; background: #E4E4E8; border-radius: 2px; overflow: hidden; }
+.pf { height: 100%; background: #3B7EF6; border-radius: 2px; transition: width .6s; }
+.pl { font-size: 9px; font-family: "SF Mono","Fira Mono",monospace; color: #3B7EF6; font-weight: 600; white-space: nowrap; }
+.et { font-size: 11px; font-weight: 600; color: #111114; margin-bottom: 4px; line-height: 1.4; }
+.es { font-size: 10px; color: #7A7A88; line-height: 1.6; }
+.mgrid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+.mc { background: #F8F8FA; border: 1px solid #E8E8EC; border-radius: 8px; padding: 10px 10px 9px; display: flex; flex-direction: column; cursor: pointer; transition: border-color .12s, background .12s; }
+.mc:hover { border-color: #BFDBFE; background: #F4F7FF; }
+.mc.ignored-card { opacity: .45; pointer-events: none; }
+.mt  { font-size: 11px; font-weight: 600; color: #111114; line-height: 1.3; }
+.mco { font-size: 10px; color: #6B6B7A; margin: 2px 0 3px; }
+.mr  { font-size: 10px; color: #9A9AA8; line-height: 1.4; background: #F0F0F5; padding: 4px 6px; border-radius: 4px; margin-bottom: 7px; }
+.mact { display: flex; gap: 5px; margin-top: auto; }
+.pr { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; gap: 12px; }
+.pr + .pr { border-top: 1px solid #F2F2F4; }
+.ptitle { font-size: 11px; font-weight: 600; color: #111114; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pco { font-size: 10px; color: #9A9AA8; }
+.ar { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
+.ar + .ar { border-top: 1px solid #F4F4F6; }
+.at { flex: 1; font-size: 11px; color: #3A3A48; line-height: 1.3; }
+.atm { font-size: 9px; color: #B0B0BC; font-family: "SF Mono","Fira Mono",monospace; white-space: nowrap; }
+.cr { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
+.cr + .cr { border-top: 1px solid #F4F4F6; }
+.cd { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dg { background: #4CAF50; } .db { background: #3B7EF6; } .da { background: #F59E0B; } .dgr { background: #C8C8D4; }
+.cn { flex: 1; font-size: 11px; color: #111114; }
+.addlink { font-size: 10px; color: #3B7EF6; cursor: pointer; margin-top: 8px; display: inline-block; }
+.addlink:hover { text-decoration: underline; }
+.insight { background: #FFFBEB; border: 1px solid #FDE68A; border-left: 3px solid #F59E0B; border-radius: 0 8px 8px 0; padding: 10px 13px; }
+.ilabel { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #D97706; margin-bottom: 5px; }
+.itext  { font-size: 11px; color: #78350F; line-height: 1.6; }
+
+/* ── MATCHES PAGE ──────────────────────────────────────────── */
+.matches-header { background: #fff; border: 1px solid #E4E4E7; border-radius: 10px; padding: 16px 18px 14px; }
+.matches-title { font-size: 16px; font-weight: 700; color: #111114; margin-bottom: 3px; }
+.matches-sub { font-size: 11px; color: #9A9AA8; }
+.frow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+.fc { font-size: 10px; padding: 4px 12px; border: 1px solid #E0E0E8; border-radius: 20px; background: #fff; color: #5A5A68; cursor: pointer; transition: all .1s; }
+.fc:hover { background: #F0F4FF; border-color: #93C5FD; }
+.fc.on { background: #EEF4FF; border-color: #3B7EF6; color: #1E40AF; font-weight: 600; }
+.mlist { display: flex; flex-direction: column; gap: 10px; }
+.mlcard { background: #fff; border: 1px solid #E4E4E7; border-radius: 10px; overflow: hidden; cursor: pointer; transition: border-color .12s; }
+.mlcard:hover { border-color: #93C5FD; }
+.mlcard-top { display: grid; grid-template-columns: 1fr auto; gap: 16px; padding: 14px 16px 12px; align-items: start; }
+.mlcard-title { font-size: 13px; font-weight: 700; color: #111114; margin-bottom: 3px; }
+.mlcard-co    { font-size: 11px; color: #6B6B7A; margin-bottom: 8px; font-weight: 500; }
+.mlcard-tags  { display: flex; gap: 5px; flex-wrap: wrap; }
+.tag { font-size: 9px; padding: 2px 7px; background: #F4F4F6; border: 1px solid #E4E4E8; border-radius: 4px; color: #5A5A68; }
+.mlcard-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; padding-top: 2px; }
+.mlcard-why { border-top: 1px solid #F2F2F4; padding: 8px 16px; background: #FAFAFA; font-size: 10px; color: #7A7A88; line-height: 1.5; display: flex; align-items: flex-start; gap: 8px; }
+.mlcard-why-icon { color: #3B7EF6; font-size: 11px; flex-shrink: 0; font-weight: 700; }
+
+/* ── JOB DETAIL ────────────────────────────────────────────── */
+.dl { display: grid; grid-template-columns: 1fr 272px; gap: 16px; align-items: start; }
+.back { font-size: 11px; color: #3B7EF6; cursor: pointer; margin-bottom: 14px; display: inline-flex; align-items: center; gap: 4px; }
+.back:hover { text-decoration: underline; }
+.detail-card { background: #fff; border: 1px solid #E4E4E7; border-radius: 10px; overflow: hidden; }
+.detail-header-band { padding: 18px 20px 16px; border-bottom: 1px solid #F0F0F2; }
+.dtt { font-size: 17px; font-weight: 700; color: #111114; margin-bottom: 4px; }
+.dco { font-size: 12px; color: #6B6B7A; margin-bottom: 10px; font-weight: 500; }
+.why-band { background: #F7FAFF; border-bottom: 1px solid #E8EFFE; padding: 14px 20px; }
+.why-band-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #3B7EF6; margin-bottom: 10px; }
+.wmr { display: flex; align-items: flex-start; gap: 12px; padding: 5px 0; border-top: 1px solid #EEF2FC; font-size: 11px; }
+.wmr:first-of-type { border-top: none; }
+.wml { color: #6B7EC8; flex: 0 0 100px; font-weight: 500; }
+.wmv { color: #1E1E2E; flex: 1; line-height: 1.5; }
+.role-band { padding: 16px 20px; border-bottom: 1px solid #F0F0F2; }
+.dst { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #9A9AA8; margin-bottom: 10px; }
+.dbody { font-size: 12px; color: #3A3A48; line-height: 1.8; }
+.dbody ul { padding-left: 18px; margin-top: 6px; }
+.dbody li { margin-bottom: 4px; }
+.source-band { padding: 12px 20px; background: #FAFAFA; }
+.score-hero { background: #F0FBF0; border: 1px solid #BBF7D0; border-radius: 10px; padding: 16px; margin-bottom: 12px; text-align: center; }
+.sh-num { font-size: 32px; font-weight: 700; color: #166534; font-family: "SF Mono","Fira Mono",monospace; }
+.sh-lbl { font-size: 10px; color: #4CAF50; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-top: 3px; }
+.sh-sub { font-size: 10px; color: #6B6B7A; margin-top: 6px; }
+.abtn { display: block; width: 100%; font-size: 11px; font-family: inherit; padding: 9px 14px; border-radius: 7px; border: 1px solid; cursor: pointer; font-weight: 600; text-align: center; transition: all .12s; margin-bottom: 7px; }
+.abtn-save   { background: #3B7EF6; border-color: #3B7EF6; color: #fff; }
+.abtn-save:hover { background: #2563EB; }
+.abtn-apply  { background: #F0FBF0; border-color: #4CAF50; color: #166534; }
+.abtn-apply:hover { background: #DCFCE7; }
+.abtn-ignore { background: #fff; border-color: #E0E0E8; color: #6B6B7A; }
+.abtn-ignore:hover { background: #F4F4F6; }
+.src-link { font-size: 10px; color: #3B7EF6; display: block; text-align: center; margin-top: 4px; cursor: pointer; }
+.drow { font-size: 11px; color: #5A5A68; padding: 5px 0; border-top: 1px solid #F4F4F6; }
+.drow:first-child { border-top: none; }
+.drow strong { color: #111114; }
+
+/* ── AGENT LOG PANEL ───────────────────────────────────────── */
+.log-entry { display: flex; align-items: flex-start; gap: 8px; padding: 7px 0; border-top: 1px solid #F4F4F6; font-size: 11px; }
+.log-entry:first-child { border-top: none; }
+.log-icon { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.log-text { flex: 1; color: #3A3A48; line-height: 1.4; }
+.log-time { font-size: 9px; color: #B0B0BC; font-family: "SF Mono","Fira Mono",monospace; white-space: nowrap; }
+
+/* ── SCANNING ANIMATION ────────────────────────────────────── */
+@keyframes scanpulse { 0%,100%{background:#3B7EF6;opacity:.4} 50%{background:#3B7EF6;opacity:1} }
+.scanning-dot { animation: scanpulse .8s infinite; }
+</style>
+</head>
+<body>
+
+<div id="proto-bar">
+  <div class="proto-section">
+    <span class="proto-label">Page</span>
+    <button class="pb page-btn active" onclick="goPage('dashboard',this)">Dashboard</button>
+    <button class="pb page-btn" onclick="goPage('matches',this)">Matches</button>
+    <button class="pb page-btn" onclick="goPage('detail',this)">Job detail</button>
+  </div>
+  <div class="proto-sep"></div>
+  <div class="proto-section" id="pstates">
+    <span class="proto-label">State override</span>
+    <button class="pb" onclick="overrideState('warmup')">Warming up</button>
+    <button class="pb" onclick="overrideState('issues')">Source issues</button>
+    <button class="pb" onclick="overrideState('none')">No matches</button>
+    <button class="pb" onclick="overrideState('live')">Live (agent)</button>
+  </div>
+  <div class="proto-sep"></div>
+  <div class="proto-section">
+    <button class="agent-run-btn" id="run-btn" onclick="runAgentUI()">▶ Run agent scan</button>
+    <button class="agent-reset-btn" onclick="resetDemo()">↺ Reset demo</button>
+    <span class="scan-counter" id="scan-counter">Scans: 0</span>
+  </div>
+  <button class="hide-btn" onclick="hideBar()">Hide toolbar ↑</button>
+</div>
+<button id="restore-btn" onclick="showBar()">Show toolbar ↓</button>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-logo">Job<span>Radar</span></div>
+    <nav class="sb-nav">
+      <div class="ni active" onclick="goPage('dashboard',null)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard
+      </div>
+      <div class="ni" onclick="goPage('matches',null)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Matches
+      </div>
+      <div class="ni">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>Saved jobs
+      </div>
+      <div class="ni">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Companies
+      </div>
+      <div class="ni" onclick="goPage('activity',null)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>Agent activity
+      </div>
+    </nav>
+    <div class="sb-footer">
+      <div class="ni" style="padding:6px 0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>Settings
+      </div>
+      <div class="sb-user">M. Lievshyna</div>
+    </div>
+  </aside>
+
+  <header class="topbar">
+    <div><div class="tb-title" id="tbtitle">Dashboard</div><div class="tb-sub" id="tbsub">Good morning, Maryna</div></div>
+    <div class="agent-badge badge-amber" id="badge"><div class="badge-dot"></div><span id="badgetxt">Warming up · no scans yet</span></div>
+  </header>
+
+  <main class="main" id="main"></main>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   DATA LAYER — embedded JSON (same as external files)
+════════════════════════════════════════════════════════════ */
+const RAW_PREFS = {"targetTitles":["UX Lead","Product Designer","Head of Design","Senior Product Designer","Design Lead"],"preferredLocations":["Paris","Remote","Remote — Europe","France"],"seniority":["Senior","Lead","Staff","Head"],"employmentType":["Full-time"],"includeKeywords":["AI","AI products","Agentic UX","Design systems","B2B SaaS","Accessibility","HCI","NLP"],"excludeKeywords":["Gaming","e-commerce only","Junior"]};
+
+const RAW_COMPANIES = [
+  {"id":"mistral","name":"Mistral AI","sourceType":"greenhouse","sourceStatus":"queued","lastChecked":null,"priority":"high","newJobsFound":0},
+  {"id":"huggingface","name":"Hugging Face","sourceType":"lever","sourceStatus":"queued","lastChecked":null,"priority":"high","newJobsFound":0},
+  {"id":"alan","name":"Alan","sourceType":"lever","sourceStatus":"queued","lastChecked":null,"priority":"medium","newJobsFound":0},
+  {"id":"photoroom","name":"Photoroom","sourceType":"greenhouse","sourceStatus":"queued","lastChecked":null,"priority":"medium","newJobsFound":0},
+  {"id":"figures","name":"Figures","sourceType":"ashby","sourceStatus":"queued","lastChecked":null,"priority":"medium","newJobsFound":0},
+  {"id":"poolside","name":"Poolside","sourceType":"lever","sourceStatus":"queued","lastChecked":null,"priority":"low","newJobsFound":0},
+  {"id":"nabla","name":"Nabla","sourceType":"greenhouse","sourceStatus":"queued","lastChecked":null,"priority":"low","newJobsFound":0},
+  {"id":"doctrine","name":"Doctrine","sourceType":"custom","sourceStatus":"queued","lastChecked":null,"priority":"low","newJobsFound":0},
+  {"id":"yousign","name":"Yousign","sourceType":"ashby","sourceStatus":"queued","lastChecked":null,"priority":"medium","newJobsFound":0}
+];
+
+const RAW_JOBS = [
+  {"id":"job-001","companyId":"mistral","title":"UX Lead — AI Products","location":"Paris","workMode":"Hybrid","employmentType":"Full-time","seniority":"Lead","keywords":["AI","AI products","Design systems","Agentic UX","B2B SaaS"],"description":"Own end-to-end design of AI-powered developer tools. Work with product, engineering, and research to define human–AI interaction.","bullets":["Lead design for 2–3 product squads","Define UX strategy and design system","Mentor junior designers","Collaborate with LLM research team"],"sourceStatus":"active"},
+  {"id":"job-002","companyId":"huggingface","title":"Senior Product Designer","location":"Paris","workMode":"Remote","employmentType":"Full-time","seniority":"Senior","keywords":["AI","B2B SaaS","Design systems","Accessibility"],"description":"Improve the experience of our model hub and developer-facing tools. Focus on clarity and accessibility.","bullets":["Design model cards and dataset pages","Collaborate with ML researchers","Own accessibility improvements","Improve API documentation UX"],"sourceStatus":"active"},
+  {"id":"job-003","companyId":"photoroom","title":"Product Designer, Trust & Safety","location":"Paris","workMode":"On-site","employmentType":"Full-time","seniority":"Senior","keywords":["AI","Trust","User research"],"description":"Work on content moderation and user protection systems for an AI-powered creative tool.","bullets":["Design moderation workflows","Improve flagging UX","Work with policy team","User research with affected communities"],"sourceStatus":"active"},
+  {"id":"job-004","companyId":"alan","title":"Lead UX Designer","location":"Paris","workMode":"Hybrid","employmentType":"Full-time","seniority":"Lead","keywords":["AI","HealthTech","Accessibility","HCI"],"description":"Own patient and clinician experience for a clinical AI assistant. Work with medical professionals and ML engineers.","bullets":["Design clinical conversation interfaces","Research with doctors and nurses","Improve onboarding for medical teams","Compliance UX with regulatory team"],"sourceStatus":"active"},
+  {"id":"job-005","companyId":"doctrine","title":"UX Designer","location":"Paris","workMode":"Hybrid","employmentType":"Full-time","seniority":"Mid","keywords":["LegalTech","AI","User research"],"description":"Improve contract analysis and search interfaces for a legal AI platform.","bullets":["Design document annotation tools","Improve search UX","Run usability testing","Improve onboarding flow"],"sourceStatus":"active"},
+  {"id":"job-006","companyId":"figures","title":"Head of Product Design","location":"Paris","workMode":"Hybrid","employmentType":"Full-time","seniority":"Head","keywords":["B2B SaaS","Design systems","Product strategy"],"description":"Define design vision and lead the design team at a compensation intelligence SaaS platform.","bullets":["Set design direction","Hire and mentor designers","Partner with product and engineering","Define design system"],"sourceStatus":"active"},
+  {"id":"job-007","companyId":"yousign","title":"Senior Product Designer","location":"Paris","workMode":"Hybrid","employmentType":"Full-time","seniority":"Senior","keywords":["B2B SaaS","Design systems","Accessibility"],"description":"Design e-signature and document workflow experiences for a fast-growing B2B SaaS platform.","bullets":["Design core document workflows","Improve onboarding","Contribute to design system","Run user interviews"],"sourceStatus":"active"},
+  {"id":"job-008","companyId":"nabla","title":"Product Designer","location":"Paris","workMode":"On-site","employmentType":"Full-time","seniority":"Mid","keywords":["HealthTech","AI","NLP"],"description":"Design clinical interfaces for a medical AI assistant used by doctors and nurses.","bullets":["Design conversation interfaces","Work with ML team","Run clinical user research","Accessibility improvements"],"sourceStatus":"active"},
+  {"id":"job-009","companyId":"poolside","title":"UX Researcher","location":"San Francisco","workMode":"On-site","employmentType":"Full-time","seniority":"Senior","keywords":["AI","User research","HCI"],"description":"Lead user research for an AI coding assistant startup. US-based, relocation required.","bullets":["Plan and run user studies","Synthesise research","Present insights to leadership","Establish research practice"],"sourceStatus":"active"},
+  {"id":"job-010","companyId":"mistral","title":"Visual Designer","location":"Paris","workMode":"Hybrid","employmentType":"Full-time","seniority":"Mid","keywords":["Brand","Motion design","Illustration"],"description":"Create visual assets and motion graphics for Mistral's brand and marketing.","bullets":["Create brand assets","Design marketing materials","Motion graphics","Illustration"],"sourceStatus":"active"},
+  {"id":"job-011","companyId":"doctrine","title":"Junior UX Designer","location":"Paris","workMode":"Hybrid","employmentType":"Full-time","seniority":"Junior","keywords":["Junior","LegalTech","UI"],"description":"Entry-level design role supporting the UX team at Doctrine.","bullets":["Support senior designers","Run usability sessions","Create wireframes","Document UX patterns"],"sourceStatus":"active"},
+  {"id":"job-012","companyId":"huggingface","title":"Product Designer — Developer Tools","location":"Remote","workMode":"Remote","employmentType":"Full-time","seniority":"Senior","keywords":["AI","Developer tools","B2B SaaS","NLP"],"description":"Design the next generation of Hugging Face developer-facing products. Fully remote.","bullets":["Design developer dashboard","Improve API UX","Run research with developers","Contribute to design system"],"sourceStatus":"expired"}
+];
+
+/* ════════════════════════════════════════════════════════════
+   utils/scoreJobs.js
+════════════════════════════════════════════════════════════ */
+function scoreJob(job, prefs, ignoredIds) {
+  if (ignoredIds.has(job.id)) return { score: 0, reason: "Ignored by you", bucket: "ignored" };
+
+  let score = 0;
+  const reasons = [];
+  const flags = [];
+
+  // Title match (+40)
+  const titleMatch = prefs.targetTitles.some(t =>
+    job.title.toLowerCase().includes(t.toLowerCase()) ||
+    t.toLowerCase().includes(job.title.toLowerCase().split(" ")[0])
+  );
+  if (titleMatch) { score += 40; reasons.push("title"); }
+
+  // Location match (+20)
+  const locMatch = prefs.preferredLocations.some(l =>
+    job.location.toLowerCase().includes(l.toLowerCase()) ||
+    l.toLowerCase().includes(job.location.toLowerCase())
+  );
+  if (locMatch) { score += 20; reasons.push("location"); }
+
+  // Seniority match (+15)
+  const senMatch = prefs.seniority.some(s =>
+    job.seniority.toLowerCase().includes(s.toLowerCase())
+  );
+  if (senMatch) { score += 15; reasons.push("seniority"); }
+
+  // Keyword matches (+10 each, max +20)
+  const kwMatches = prefs.includeKeywords.filter(kw =>
+    job.keywords.some(jk => jk.toLowerCase().includes(kw.toLowerCase()) || kw.toLowerCase().includes(jk.toLowerCase())) ||
+    job.description.toLowerCase().includes(kw.toLowerCase())
+  );
+  const kwBonus = Math.min(kwMatches.length * 10, 20);
+  if (kwBonus > 0) { score += kwBonus; reasons.push("keywords (" + kwMatches.slice(0,3).join(", ") + ")"); }
+
+  // Exclude keywords (-25)
+  const exMatches = prefs.excludeKeywords.filter(kw =>
+    job.keywords.some(jk => jk.toLowerCase().includes(kw.toLowerCase())) ||
+    job.title.toLowerCase().includes(kw.toLowerCase())
+  );
+  if (exMatches.length > 0) { score -= 25; flags.push("excluded keyword: " + exMatches[0]); }
+
+  // Expired / closed (-20)
+  if (job.sourceStatus !== "active") { score -= 20; flags.push("role is " + job.sourceStatus); }
+
+  // Seniority mismatch downgrade
+  if (!senMatch) flags.push("seniority is " + job.seniority.toLowerCase() + " — below your target");
+
+  score = Math.max(0, Math.min(100, score));
+
+  // Plain-language reason
+  let reason = "";
+  if (score >= 75) {
+    reason = reasons.length >= 3
+      ? reasons.slice(0,3).join(", ") + " — strong match"
+      : (reasons.join(" and ") || "good overall fit") + " match your criteria";
+  } else if (score >= 50) {
+    if (flags.length > 0) reason = "Partial match — " + flags[0];
+    else reason = (reasons.join(" and ") || "some criteria") + " match; " + (flags[0] || "scope differs slightly");
+  } else if (score >= 25) {
+    reason = flags.length > 0 ? "Weak match — " + flags[0] : "Few criteria match your preferences";
+  } else {
+    reason = flags.length > 0 ? "Filtered out — " + flags[0] : "Does not match your current preferences";
+  }
+
+  const bucket = score >= 70 ? "top" : score >= 40 ? "weak" : "filtered";
+  const sc = score >= 70 ? "hi" : score >= 40 ? "mid" : "lo";
+
+  return { score, reason, bucket, sc, matchedKeywords: kwMatches };
+}
+
+/* ════════════════════════════════════════════════════════════
+   utils/buildActivityLog.js
+════════════════════════════════════════════════════════════ */
+function buildActivityLog(companies, scoredJobs, prevLog) {
+  const now = new Date();
+  const fmt = (d) => {
+    const diff = Math.round((now - d) / 1000);
+    if (diff < 60) return "just now";
+    if (diff < 3600) return Math.round(diff/60) + "min ago";
+    return Math.round(diff/3600) + "h ago";
+  };
+
+  const entries = [];
+  companies.forEach(c => {
+    const cJobs = scoredJobs.filter(j => j.job.companyId === c.id);
+    const topFound = cJobs.filter(j => j.bucket === "top").length;
+    const weakFound = cJobs.filter(j => j.bucket === "weak").length;
+    const filtered = cJobs.filter(j => j.bucket === "filtered").length;
+
+    if (c.sourceStatus === "error") {
+      entries.push({ type:"warning", dot:"da", pillCls:"am", pillLabel:"Error", company:c.name, text:c.name + " — career page unavailable, retry scheduled", time: fmt(c.lastChecked || now) });
+    } else if (c.sourceStatus === "done") {
+      if (topFound > 0) {
+        entries.push({ type:"success", dot:"dg", pillCls:"g", pillLabel:"Done", company:c.name, text:c.name + " — " + topFound + " new role" + (topFound>1?"s":"") + " found", time: fmt(c.lastChecked || now) });
+      } else if (weakFound > 0) {
+        entries.push({ type:"info", dot:"db", pillCls:"bl", pillLabel:"Done", company:c.name, text:c.name + " — " + weakFound + " role" + (weakFound>1?"s":"") + " found (weak match)", time: fmt(c.lastChecked || now) });
+      } else if (filtered > 0) {
+        entries.push({ type:"info", dot:"dgr", pillCls:"gr", pillLabel:"Done", company:c.name, text:c.name + " — " + filtered + " role" + (filtered>1?"s":"") + " filtered (below threshold)", time: fmt(c.lastChecked || now) });
+      } else {
+        entries.push({ type:"info", dot:"dgr", pillCls:"gr", pillLabel:"Done", company:c.name, text:c.name + " — checked, no new roles", time: fmt(c.lastChecked || now) });
+      }
+    } else if (c.sourceStatus === "scanning") {
+      entries.push({ type:"scanning", dot:"db scanning-dot", pillCls:"bl", pillLabel:"Scanning", company:c.name, text:c.name + " — reading career page now", time:"in progress" });
+    } else {
+      entries.push({ type:"queued", dot:"dgr", pillCls:"gr", pillLabel:"Queued", company:c.name, text:c.name + " — waiting to start", time:"—" });
+    }
+  });
+
+  return [...entries, ...prevLog.slice(0, Math.max(0, 8 - entries.length))];
+}
+
+/* ════════════════════════════════════════════════════════════
+   utils/runAgent.js
+════════════════════════════════════════════════════════════ */
+function runAgent(companies, jobs, prefs, ignoredIds, scanCount) {
+  // Simulate source reliability — some companies occasionally fail
+  const errorCompanies = new Set();
+  if (scanCount % 4 === 3) { errorCompanies.add("poolside"); errorCompanies.add("nabla"); }
+
+  // Update company statuses
+  const updatedCompanies = companies.map(c => {
+    const isError = errorCompanies.has(c.id);
+    const jobsForCo = jobs.filter(j => j.companyId === c.id && j.sourceStatus === "active");
+    return {
+      ...c,
+      sourceStatus: isError ? "error" : "done",
+      lastChecked: new Date(),
+      newJobsFound: isError ? 0 : jobsForCo.length
+    };
+  });
+
+  // Score all jobs
+  const scoredJobs = jobs
+    .filter(j => !errorCompanies.has(j.companyId))
+    .map(j => {
+      const result = scoreJob(j, prefs, ignoredIds);
+      return { job: j, ...result };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  const topMatches    = scoredJobs.filter(x => x.bucket === "top");
+  const weakMatches   = scoredJobs.filter(x => x.bucket === "weak");
+  const filteredOut   = scoredJobs.filter(x => x.bucket === "filtered");
+
+  const hasErrors = errorCompanies.size > 0;
+  const errNames  = [...errorCompanies].map(id => updatedCompanies.find(c=>c.id===id)?.name).filter(Boolean);
+
+  // Dashboard state
+  let dashState, summaryH, summaryS, badgeCls, badgeTxt;
+  if (topMatches.length >= 2) {
+    dashState = "strong";
+    summaryH = topMatches.length + " strong match" + (topMatches.length>1?"es":"") + " found" + (hasErrors ? " — " + errorCompanies.size + " source" + (errorCompanies.size>1?"s":"") + " unavailable" : "");
+    summaryS = topMatches.slice(0,2).map(x=>x.job.companyId).map(id => updatedCompanies.find(c=>c.id===id)?.name).join(" and ") + " have roles matching your UX Lead profile.";
+    badgeCls = hasErrors ? "badge-amber" : "badge-green";
+    badgeTxt = hasErrors ? "Warning · " + errorCompanies.size + " source" + (errorCompanies.size>1?"s":"") + " unavailable" : "Active · just checked";
+  } else if (weakMatches.length > 0) {
+    dashState = "weak";
+    summaryH = "No strong matches — " + weakMatches.length + " partial match" + (weakMatches.length>1?"es":"") + " found";
+    summaryS = "Roles were found but scored below your relevance threshold. Consider broadening your criteria.";
+    badgeCls = "badge-blue"; badgeTxt = "Active · just checked";
+  } else {
+    dashState = "none";
+    summaryH = "Agent checked " + (updatedCompanies.length - errorCompanies.size) + " of " + updatedCompanies.length + " companies — nothing new";
+    summaryS = "No roles matched your current preferences. Your agent will check again next cycle.";
+    badgeCls = "badge-blue"; badgeTxt = "Active · just checked";
+  }
+
+  const meta = updatedCompanies.length + " companies · " + topMatches.length + " top match" + (topMatches.length===1?"":"es") + " · " + weakMatches.length + " weak · just now";
+
+  return {
+    dashState, summaryH, summaryS, summaryMeta: meta,
+    badgeCls, badgeTxt,
+    topMatches, weakMatches, filteredOut,
+    updatedCompanies, hasErrors, errNames, errorCompanies
+  };
+}
+
+/* ════════════════════════════════════════════════════════════
+   APP STATE
+════════════════════════════════════════════════════════════ */
+let STATE = {
+  prefs: JSON.parse(JSON.stringify(RAW_PREFS)),
+  companies: JSON.parse(JSON.stringify(RAW_COMPANIES)),
+  jobs: JSON.parse(JSON.stringify(RAW_JOBS)),
+  agentResult: null,
+  activityLog: [],
+  ignoredIds: new Set(),
+  savedIds: new Set(),
+  scanCount: 0,
+  mode: "warmup",      // warmup | live | issues | none | override
+  page: "dashboard",
+  selectedJob: null,
+};
+
+/* ════════════════════════════════════════════════════════════
+   AGENT UI RUNNER
+════════════════════════════════════════════════════════════ */
+async function runAgentUI() {
+  if (STATE.scanCount === 0) {
+    // First run: simulate scanning step by step
+    await simulateFirstRun();
+  } else {
+    await simulateRun();
+  }
+}
+
+async function simulateFirstRun() {
+  const btn = document.getElementById("run-btn");
+  btn.textContent = "▶ Scanning…"; btn.classList.add("running");
+  STATE.mode = "scanning";
+  STATE.companies = RAW_COMPANIES.map(c => ({...c, sourceStatus:"queued"}));
+
+  for (let i = 0; i < STATE.companies.length; i++) {
+    STATE.companies[i].sourceStatus = "scanning";
+    renderDashboardScan(i);
+    await sleep(340);
+    STATE.companies[i].sourceStatus = "done";
+    STATE.companies[i].lastChecked = new Date();
+  }
+  await completeRun(btn);
+}
+
+async function simulateRun() {
+  const btn = document.getElementById("run-btn");
+  btn.textContent = "▶ Scanning…"; btn.classList.add("running");
+  await sleep(800);
+  await completeRun(btn);
+}
+
+async function completeRun(btn) {
+  STATE.scanCount++;
+  document.getElementById("scan-counter").textContent = "Scans: " + STATE.scanCount;
+
+  const result = runAgent(STATE.companies, STATE.jobs, STATE.prefs, STATE.ignoredIds, STATE.scanCount);
+  STATE.agentResult = result;
+  STATE.companies = result.updatedCompanies;
+  STATE.activityLog = buildActivityLog(result.updatedCompanies, result.topMatches.concat(result.weakMatches).concat(result.filteredOut), STATE.activityLog);
+  STATE.mode = "live";
+
+  btn.textContent = "▶ Run agent scan"; btn.classList.remove("running");
+  drawPage();
+}
+
+async function renderDashboardScan(scanningIdx) {
+  const el = document.getElementById("main");
+  if (STATE.page !== "dashboard") return;
+  const done = STATE.companies.filter(c=>c.sourceStatus==="done").length;
+  const total = STATE.companies.length;
+  const pct = Math.round((done/total)*100);
+
+  setBadge("badge-amber", "Scanning · " + done + " of " + total + " checked");
+  let h = `<div class="card card-accent">
+    <div class="mlabel" style="margin-bottom:8px">AI Summary</div>
+    <div class="sh">Agent is scanning company career pages…</div>
+    <div class="ss">Checking each source and scoring roles against your preferences.</div>
+    <div class="sm">Scan in progress · ${done} of ${total} companies checked</div>
+  </div>`;
+  h += `<div class="two-col"><div class="col">`;
+  h += `<div class="card"><div class="mhd"><span class="mlabel">Top matches</span></div>
+    <div class="empty">
+      <div class="prow"><div class="pt"><div class="pf" style="width:${pct}%"></div></div><span class="pl">${done} of ${total} checked</span></div>
+      <div class="et">Scanning in progress…</div>
+      <div class="es">Results will appear as soon as the first relevant match is found.</div>
+    </div></div>`;
+  h += `<div class="card"><div class="mhd"><span class="mlabel">Saved jobs — action needed</span></div>
+    <div class="empty"><div class="et">No saved jobs yet</div><div class="es">Save a match to track it here.</div></div></div>`;
+  h += `</div><div class="col">`;
+  h += `<div class="card"><div class="mhd"><span class="mlabel">Agent activity</span></div>`;
+  STATE.companies.forEach(c => {
+    const s = c.sourceStatus;
+    const dot = s==="done" ? "dg" : s==="scanning" ? "db scanning-dot" : "dgr";
+    const pc = s==="done" ? "g" : s==="scanning" ? "bl" : "gr";
+    const lbl = s==="done" ? "Done" : s==="scanning" ? "Scanning" : "Queued";
+    const txt = s==="done" ? c.name+" — read successfully" : s==="scanning" ? c.name+" — reading now" : c.name+" — waiting";
+    h += `<div class="ar"><span class="pill ${pc}">${lbl}</span><span class="at">${txt}</span></div>`;
+  });
+  h += `</div>`;
+  h += `<div class="card"><div class="mhd"><span class="mlabel">Tracked companies · ${total} monitored</span></div>`;
+  STATE.companies.forEach(c => {
+    const s = c.sourceStatus;
+    const dot = s==="done" ? "dg" : s==="scanning" ? "db scanning-dot" : "dgr";
+    const pc = s==="done" ? "g" : s==="scanning" ? "bl" : "gr";
+    const lbl = s==="done" ? "Done" : s==="scanning" ? "Scanning" : "Queued";
+    h += `<div class="cr"><div class="cd ${dot}"></div><span class="cn">${c.name}</span><span class="pill ${pc}">${lbl}</span></div>`;
+  });
+  h += `</div></div></div>`;
+  el.innerHTML = h;
+  await sleep(0);
+}
+
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+/* ════════════════════════════════════════════════════════════
+   STATE OVERRIDES (proto toolbar)
+════════════════════════════════════════════════════════════ */
+function overrideState(mode) {
+  STATE.mode = mode;
+  if (mode === "live" && !STATE.agentResult) {
+    // Force a quick live run
+    const result = runAgent(STATE.companies, STATE.jobs, STATE.prefs, STATE.ignoredIds, 1);
+    STATE.agentResult = result;
+    STATE.companies = result.updatedCompanies;
+    STATE.activityLog = buildActivityLog(result.updatedCompanies, result.topMatches.concat(result.weakMatches).concat(result.filteredOut), []);
+    STATE.scanCount = 1;
+    document.getElementById("scan-counter").textContent = "Scans: 1";
+  }
+  drawPage();
+}
+
+function resetDemo() {
+  STATE.companies = JSON.parse(JSON.stringify(RAW_COMPANIES));
+  STATE.agentResult = null;
+  STATE.activityLog = [];
+  STATE.ignoredIds = new Set();
+  STATE.savedIds = new Set();
+  STATE.scanCount = 0;
+  STATE.mode = "warmup";
+  STATE.page = "dashboard";
+  document.getElementById("scan-counter").textContent = "Scans: 0";
+  goPage("dashboard", null);
+}
+
+/* ════════════════════════════════════════════════════════════
+   PAGE ROUTING
+════════════════════════════════════════════════════════════ */
+function goPage(p, btn) {
+  STATE.page = p;
+  if (btn) {
+    document.querySelectorAll(".pb.page-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+  }
+  document.querySelectorAll(".ni").forEach((el,i) => {
+    el.classList.remove("active");
+    if ((p==="dashboard"&&i===0)||(p==="matches"&&i===1)||(p==="detail"&&i===1)||(p==="activity"&&i===4)) el.classList.add("active");
+  });
+  document.getElementById("tbtitle").textContent = {dashboard:"Dashboard",matches:"Matches",detail:"Job detail",activity:"Agent activity"}[p] || p;
+  drawPage();
+}
+
+function openDetail(jobId) {
+  STATE.selectedJob = STATE.jobs.find(j=>j.id===jobId);
+  goPage("detail", document.querySelectorAll(".pb.page-btn")[2]);
+}
+
+function ignoreJob(jobId, ev) {
+  if (ev) ev.stopPropagation();
+  STATE.ignoredIds.add(jobId);
+  drawPage();
+}
+
+function saveJob(jobId, ev) {
+  if (ev) ev.stopPropagation();
+  STATE.savedIds.add(jobId);
+  drawPage();
+}
+
+function setBadge(cls, txt) {
+  const b = document.getElementById("badge");
+  b.className = "agent-badge " + cls;
+  b.innerHTML = `<div class="badge-dot"></div><span>${txt}</span>`;
+}
+
+/* ════════════════════════════════════════════════════════════
+   DRAW ROUTER
+════════════════════════════════════════════════════════════ */
+function drawPage() {
+  const el = document.getElementById("main");
+  if (STATE.page === "dashboard")  drawDashboard(el);
+  else if (STATE.page === "matches") drawMatches(el);
+  else if (STATE.page === "detail")  drawDetail(el);
+  else if (STATE.page === "activity") drawActivity(el);
+}
+
+/* ════════════════════════════════════════════════════════════
+   DASHBOARD
+════════════════════════════════════════════════════════════ */
+function drawDashboard(el) {
+  const mode = STATE.mode;
+
+  // Warmup state
+  if (mode === "warmup" || !STATE.agentResult) {
+    setBadge("badge-amber", "Warming up · no scans yet");
+    const done = STATE.companies.filter(c=>c.sourceStatus==="done").length;
+    el.innerHTML = warmupDash(done, STATE.companies.length);
+    return;
+  }
+
+  const R = STATE.agentResult;
+  const isIssues = mode === "issues" || R.hasErrors;
+  const top = R.topMatches.filter(x => !STATE.ignoredIds.has(x.job.id));
+  const pipeline = [...STATE.savedIds].map(id => STATE.jobs.find(j=>j.id===id)).filter(Boolean);
+
+  setBadge(R.badgeCls, R.badgeTxt);
+
+  let h = "";
+
+  if (isIssues && R.errNames.length) {
+    h += `<div class="banner banner-warn"><span>⚠</span><span>${R.errNames.join(" and ")} could not be reached. Retry is scheduled. Other results are unaffected.</span></div>`;
+  }
+  if (mode === "none" && !top.length) {
+    h += `<div class="banner banner-info"><span>ℹ</span><span>No new matches today. Your agent checked all companies and will notify you when something changes.</span></div>`;
+  }
+
+  h += `<div class="card card-accent">
+    <div class="mlabel" style="margin-bottom:8px">AI Summary</div>
+    <div class="sh">${R.summaryH}</div>
+    <div class="ss">${R.summaryS}</div>
+    <div class="sm">${R.summaryMeta}</div>
+  </div>`;
+
+  h += `<div class="two-col"><div class="col">`;
+
+  // Top matches
+  h += `<div class="card"><div class="mhd"><span class="mlabel">Top matches</span><a class="mlink" onclick="goPage('matches',document.querySelectorAll('.pb.page-btn')[1])">View all →</a></div>`;
+  if (top.length) {
+    h += `<div class="mgrid">`;
+    top.slice(0,3).forEach(x => {
+      const ignored = STATE.ignoredIds.has(x.job.id);
+      h += `<div class="mc${ignored?' ignored-card':''}" onclick="openDetail('${x.job.id}')">
+        <div class="mscore ${x.sc}" style="margin-bottom:5px">${x.score}%</div>
+        <div class="mt">${x.job.title}</div>
+        <div class="mco">${STATE.companies.find(c=>c.id===x.job.companyId)?.name||x.job.companyId}</div>
+        <div class="mr">${x.reason}</div>
+        <div class="mact">
+          <button class="btn p" onclick="saveJob('${x.job.id}',event)">Save</button>
+          <button class="btn${ignored?' ignored':''}" onclick="ignoreJob('${x.job.id}',event)">${ignored?'Ignored':'Ignore'}</button>
+          <button class="btn" onclick="openDetail('${x.job.id}')">Details →</button>
+        </div>
+      </div>`;
+    });
+    h += `</div>`;
+  } else {
+    h += `<div class="empty"><div class="et">No strong matches yet</div><div class="es">Run the agent to scan your tracked companies. Matches will appear here.</div></div>`;
+  }
+  h += `</div>`;
+
+  // Pipeline
+  h += `<div class="card"><div class="mhd"><span class="mlabel">Saved jobs · ${pipeline.length}</span><a class="mlink">Pipeline →</a></div>`;
+  if (pipeline.length) {
+    pipeline.forEach(j => {
+      h += `<div class="pr"><div><div class="ptitle">${j.title}</div><div class="pco">${STATE.companies.find(c=>c.id===j.companyId)?.name} · saved</div></div><span class="pill bl">Saved</span></div>`;
+    });
+  } else {
+    h += `<div class="empty"><div class="et">No saved jobs yet</div><div class="es">Save a match to track it here.</div></div>`;
+  }
+  h += `</div></div><div class="col">`;
+
+  // Activity
+  h += `<div class="card"><div class="mhd"><span class="mlabel">Agent activity</span><a class="mlink" onclick="goPage('activity',null)">Full log →</a></div>`;
+  STATE.activityLog.slice(0,6).forEach(a => {
+    h += `<div class="ar"><span class="pill ${a.pillCls}">${a.pillLabel}</span><span class="at">${a.text}</span><span class="atm">${a.time}</span></div>`;
+  });
+  h += `</div>`;
+
+  // Companies
+  h += `<div class="card"><div class="mhd"><span class="mlabel">Tracked companies · ${STATE.companies.length}</span><a class="mlink">Manage →</a></div>`;
+  STATE.companies.forEach(c => {
+    const dotMap = {done:"dg",error:"da",scanning:"db",queued:"dgr",paused:"dgr"};
+    const pillMap = {done:"g",error:"am",scanning:"bl",queued:"gr",paused:"gr"};
+    const lblMap  = {done:"Done",error:"Error",scanning:"Scanning",queued:"Queued",paused:"Paused"};
+    const dot = dotMap[c.sourceStatus]||"dgr";
+    const pc  = pillMap[c.sourceStatus]||"gr";
+    const lbl = lblMap[c.sourceStatus]||c.sourceStatus;
+    h += `<div class="cr"><div class="cd ${dot}"></div><span class="cn">${c.name}</span><span class="pill ${pc}">${lbl}</span></div>`;
+  });
+  h += `<a class="addlink">+ Add company</a></div>`;
+
+  // Insight
+  if (R.topMatches.length === 0) {
+    h += `<div class="insight"><div class="ilabel">Agent suggestion</div><div class="itext">No strong matches found yet. Try adding more companies or broadening your title or seniority preferences.</div></div>`;
+  }
+
+  h += `</div></div>`;
+  el.innerHTML = h;
+}
+
+function warmupDash(done, total) {
+  const pct = total > 0 ? Math.round((done/total)*100) : 0;
+  return `
+  <div class="banner banner-info"><span>ℹ</span><span>Click <strong>▶ Run agent scan</strong> above to start your first scan. Your agent will check all tracked companies and score available roles.</span></div>
+  <div class="card card-accent">
+    <div class="mlabel" style="margin-bottom:8px">AI Summary</div>
+    <div class="sh">Your agent is ready — press Run to start</div>
+    <div class="ss">9 companies are set up and ready to monitor. Your first scan will check each career page and return scored matches.</div>
+    <div class="sm">9 companies configured · 0 scans completed · agent ready</div>
+  </div>
+  <div class="two-col"><div class="col">
+    <div class="card"><div class="mhd"><span class="mlabel">Top matches</span></div>
+      <div class="empty">
+        ${done > 0 ? `<div class="prow"><div class="pt"><div class="pf" style="width:${pct}%"></div></div><span class="pl">${done} of ${total} checked</span></div>` : ""}
+        <div class="et">Results will appear as soon as the first relevant match is found</div>
+        <div class="es">Press ▶ Run agent scan to start checking your tracked companies.</div>
+      </div>
+    </div>
+    <div class="card"><div class="mhd"><span class="mlabel">Saved jobs</span></div>
+      <div class="empty"><div class="et">Saved roles will appear here once you start reviewing matches</div></div>
+    </div>
+  </div><div class="col">
+    <div class="card"><div class="mhd"><span class="mlabel">Agent activity</span></div>
+      ${STATE.companies.map(c => `<div class="ar"><span class="pill gr">Queued</span><span class="at">${c.name} — waiting to start</span><span class="atm">—</span></div>`).join("")}
+    </div>
+    <div class="card"><div class="mhd"><span class="mlabel">Tracked companies · ${STATE.companies.length}</span></div>
+      ${STATE.companies.map(c => `<div class="cr"><div class="cd dgr"></div><span class="cn">${c.name}</span><span class="pill gr">Queued</span></div>`).join("")}
+      <a class="addlink">+ Add company</a>
+    </div>
+  </div></div>`;
+}
+
+/* ════════════════════════════════════════════════════════════
+   MATCHES PAGE
+════════════════════════════════════════════════════════════ */
+function drawMatches(el) {
+  setBadge(STATE.agentResult?.badgeCls || "badge-amber", STATE.agentResult?.badgeTxt || "Warming up");
+
+  if (!STATE.agentResult) {
+    el.innerHTML = `<div class="empty" style="padding:32px;text-align:center"><div class="et">No matches yet</div><div class="es">Run the agent scan first to see matches here.</div></div>`;
+    return;
+  }
+
+  const all = [...STATE.agentResult.topMatches, ...STATE.agentResult.weakMatches]
+    .filter(x => !STATE.ignoredIds.has(x.job.id));
+
+  let h = `<div class="matches-header">
+    <div class="matches-title">Matches</div>
+    <div class="matches-sub">${all.length} roles scored · ${STATE.agentResult.topMatches.length} strong · ${STATE.agentResult.weakMatches.length} weak · last scan just now</div>
+    <div class="frow">
+      <button class="fc on">All (${all.length})</button>
+      <button class="fc">Strong (${STATE.agentResult.topMatches.length})</button>
+      <button class="fc">Paris</button>
+      <button class="fc">Remote</button>
+      <button class="fc sort" style="margin-left:auto">Score ↓</button>
+    </div>
+  </div><div class="mlist">`;
+
+  all.forEach(x => {
+    const co = STATE.companies.find(c=>c.id===x.job.companyId)?.name || x.job.companyId;
+    h += `<div class="mlcard" onclick="openDetail('${x.job.id}')">
+      <div class="mlcard-top">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <span class="mscore ${x.sc}">${x.score}%</span>
+            <span style="font-size:10px;color:#9A9AA8">${x.job.location} · ${x.job.workMode} · ${x.job.employmentType}</span>
+          </div>
+          <div class="mlcard-title">${x.job.title}</div>
+          <div class="mlcard-co">${co}</div>
+          <div class="mlcard-tags">${x.job.keywords.slice(0,4).map(k=>`<span class="tag">${k}</span>`).join("")}</div>
+        </div>
+        <div class="mlcard-actions">
+          <div style="display:flex;gap:5px">
+            <button class="btn p" onclick="saveJob('${x.job.id}',event)">Save</button>
+            <button class="btn" onclick="ignoreJob('${x.job.id}',event)">Ignore</button>
+          </div>
+          <button class="btn" style="width:100%;margin-top:4px" onclick="openDetail('${x.job.id}')">Open details →</button>
+        </div>
+      </div>
+      <div class="mlcard-why"><span class="mlcard-why-icon">→</span><span><strong style="color:#3B7EF6">Why it matches:</strong> ${x.reason}</span></div>
+    </div>`;
+  });
+
+  if (!all.length) h += `<div class="empty" style="padding:24px"><div class="et">No matches to show</div><div class="es">All results may be filtered or ignored. Run the agent again or reset ignored jobs.</div></div>`;
+  h += `</div>`;
+  el.innerHTML = h;
+}
+
+/* ════════════════════════════════════════════════════════════
+   JOB DETAIL
+════════════════════════════════════════════════════════════ */
+function drawDetail(el) {
+  const job = STATE.selectedJob;
+  if (!job) { el.innerHTML = `<div class="empty"><div class="et">No job selected</div><div class="es">Open a match from the Matches page.</div></div>`; return; }
+  const co = STATE.companies.find(c=>c.id===job.companyId)?.name || job.companyId;
+  const scored = STATE.agentResult ? [...STATE.agentResult.topMatches,...STATE.agentResult.weakMatches,...STATE.agentResult.filteredOut].find(x=>x.job.id===job.id) : null;
+  const score = scored?.score ?? "—";
+  const sc    = scored?.sc ?? "gr";
+  const reason= scored?.reason ?? "Run agent to score this role";
+  const isSaved = STATE.savedIds.has(job.id);
+  const isIgnored = STATE.ignoredIds.has(job.id);
+
+  setBadge(STATE.agentResult?.badgeCls||"badge-amber", STATE.agentResult?.badgeTxt||"Warming up");
+
+  let h = `<a class="back" onclick="goPage('matches',document.querySelectorAll('.pb.page-btn')[1])">← Back to matches</a>
+  <div class="dl">
+    <div>
+      <div class="detail-card">
+        <div class="detail-header-band">
+          <div class="dtt">${job.title}</div>
+          <div class="dco">${co} · ${job.location} · ${job.workMode} · ${job.employmentType}</div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap">${job.keywords.map(k=>`<span class="tag">${k}</span>`).join("")}</div>
+        </div>
+        <div class="why-band">
+          <div class="why-band-title">Why this matches you</div>
+          <div class="wmr"><span class="wml">Match score</span><span class="wmv"><span class="mscore ${sc}">${score}${typeof score==='number'?'%':''}</span></span></div>
+          <div class="wmr"><span class="wml">Explanation</span><span class="wmv">${reason}</span></div>
+          <div class="wmr"><span class="wml">Location</span><span class="wmv">${job.location} · ${job.workMode}</span></div>
+          <div class="wmr"><span class="wml">Seniority</span><span class="wmv">${job.seniority}</span></div>
+          <div class="wmr"><span class="wml">Source</span><span class="wmv">${job.sourceStatus === "active" ? "Active posting" : job.sourceStatus}</span></div>
+        </div>
+        <div class="role-band">
+          <div class="dst">About the role</div>
+          <div class="dbody"><p>${job.description}</p><ul>${(job.bullets||[]).map(b=>`<li>${b}</li>`).join("")}</ul></div>
+        </div>
+        <div class="source-band">
+          <div class="dst">Source</div>
+          <div style="font-size:11px;color:#5A5A68">Found via monitored career page · <span style="color:#3B7EF6;cursor:pointer">View original posting →</span></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="score-hero">
+        <div class="sh-num">${score}${typeof score==='number'?'%':''}</div>
+        <div class="sh-lbl">Match score</div>
+        <div class="sh-sub">Based on your current preferences</div>
+      </div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="mlabel" style="margin-bottom:10px">Actions</div>
+        <button class="abtn abtn-save" onclick="saveJob('${job.id}',null);drawPage()">${isSaved?'✓ Saved to pipeline':'Save to pipeline'}</button>
+        <button class="abtn abtn-apply">Mark as applied</button>
+        <button class="abtn abtn-ignore" onclick="ignoreJob('${job.id}',null);drawPage()">${isIgnored?'✓ Ignored':'Ignore this role'}</button>
+        <a class="src-link">View on company site →</a>
+      </div>
+      <div class="card">
+        <div class="mlabel" style="margin-bottom:8px">Role details</div>
+        <div class="drow"><strong>Company</strong> · ${co}</div>
+        <div class="drow"><strong>Location</strong> · ${job.location}</div>
+        <div class="drow"><strong>Mode</strong> · ${job.workMode}</div>
+        <div class="drow"><strong>Type</strong> · ${job.employmentType}</div>
+        <div class="drow"><strong>Seniority</strong> · ${job.seniority}</div>
+        <div class="drow"><strong>Source</strong> · ${job.sourceStatus}</div>
+      </div>
+    </div>
+  </div>`;
+  el.innerHTML = h;
+}
+
+/* ════════════════════════════════════════════════════════════
+   AGENT ACTIVITY PAGE
+════════════════════════════════════════════════════════════ */
+function drawActivity(el) {
+  setBadge(STATE.agentResult?.badgeCls||"badge-amber", STATE.agentResult?.badgeTxt||"Warming up");
+
+  let h = `<div class="card" style="margin-bottom:14px">
+    <div class="mhd" style="margin-bottom:14px">
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#111114;margin-bottom:2px">Agent activity log</div>
+        <div style="font-size:11px;color:#9A9AA8">All checks, findings, and status changes · ${STATE.scanCount} scan${STATE.scanCount===1?'':'s'} completed</div>
+      </div>
+    </div>`;
+
+  if (STATE.activityLog.length === 0) {
+    h += `<div class="empty"><div class="et">No activity yet</div><div class="es">Run the agent scan to see activity here.</div></div>`;
+  } else {
+    STATE.activityLog.forEach(a => {
+      const dotColor = {dg:"#4CAF50",db:"#3B7EF6",da:"#F59E0B",dgr:"#C8C8D4"}[a.dot?.split(" ")[0]] || "#C8C8D4";
+      h += `<div class="log-entry">
+        <div class="log-icon" style="background:${dotColor}"></div>
+        <span class="log-text">${a.text}</span>
+        <span class="log-time">${a.time}</span>
+      </div>`;
+    });
+  }
+
+  h += `</div>`;
+
+  // Filtered out section
+  if (STATE.agentResult?.filteredOut?.length) {
+    h += `<div class="card">
+      <div class="mhd"><span class="mlabel">Filtered out (${STATE.agentResult.filteredOut.length} roles below threshold)</span><span style="font-size:10px;color:#9A9AA8">These scored too low to surface</span></div>`;
+    STATE.agentResult.filteredOut.slice(0,5).forEach(x => {
+      const co = STATE.companies.find(c=>c.id===x.job.companyId)?.name||x.job.companyId;
+      h += `<div class="ar">
+        <span class="mscore lo">${x.score}%</span>
+        <span class="at"><strong>${x.job.title}</strong> · ${co} — ${x.reason}</span>
+        <button class="btn" onclick="openDetail('${x.job.id}')">Review →</button>
+      </div>`;
+    });
+    h += `</div>`;
+  }
+
+  el.innerHTML = h;
+}
+
+/* ── INIT ──────────────────────────────────────────────────── */
+function hideBar(){ document.getElementById("proto-bar").classList.add("hidden"); document.getElementById("restore-btn").style.display="block"; }
+function showBar(){ document.getElementById("proto-bar").classList.remove("hidden"); document.getElementById("restore-btn").style.display="none"; }
+
+drawPage();
+</script>
+</body>
+</html>
