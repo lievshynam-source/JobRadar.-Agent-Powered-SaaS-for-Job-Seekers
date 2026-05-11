@@ -41,8 +41,6 @@ And yes, tools like Apify, Claude workflows, scraping scripts, cloud setups, and
 
 ---
 
-## Product Concept
-
 JobRadar is a simple private job tracking tool for people who want to apply for a job. Simple.
 
 Instead of searching the whole internet, users choose the companies they want to work in. The agent monitors those career pages, finds relevant roles, explains why they match, and helps users decide what to save, ignore, or apply to.
@@ -50,6 +48,18 @@ Instead of searching the whole internet, users choose the companies they want to
 The idea is simple:
 
 > Pick your dream companies. Set your preferences. Let the agent watch the boring part.
+
+## Dashboard Preview
+
+![JobRadar dashboard preview](./screenshots/dashboard-preview.png)
+
+The dashboard is designed to answer three questions fast:
+
+- what happened
+- what matters now
+- what should I do next
+
+## Who It Is For
 
 ---
 
