@@ -49,7 +49,6 @@ The idea is simple:
 
 > Pick your dream companies. Set your preferences. Let the agent watch the boring part.
 
-## Dashboard Preview
 
 ## Dashboard Preview
 
@@ -61,7 +60,6 @@ The dashboard is designed to answer three questions fast:
 - what matters now
 - what should I do next
 
-## Who It Is For
 
 ---
 
