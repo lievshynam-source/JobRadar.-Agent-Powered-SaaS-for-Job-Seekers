@@ -6,7 +6,7 @@ It explores agent UX, explainability, and decision-support workflows for a job s
 
 ## Open Prototype
 
-[Launch Interactive Dashboard Prototype](./jobradar-dashboard.html)
+[Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-dashboard.html)
 
 > Standalone HTML prototype. No backend, no API, no setup required.
 ---
