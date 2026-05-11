@@ -1,0 +1,11 @@
+[
+  { "id": "mistral",    "name": "Mistral AI",    "sourceType": "greenhouse", "sourceUrl": "https://boards.greenhouse.io/mistral",    "sourceStatus": "queued", "lastChecked": null, "priority": "high",   "newJobsFound": 0 },
+  { "id": "huggingface","name": "Hugging Face",  "sourceType": "lever",      "sourceUrl": "https://apply.workable.com/huggingface",   "sourceStatus": "queued", "lastChecked": null, "priority": "high",   "newJobsFound": 0 },
+  { "id": "alan",       "name": "Alan",          "sourceType": "lever",      "sourceUrl": "https://jobs.lever.co/alan",               "sourceStatus": "queued", "lastChecked": null, "priority": "medium", "newJobsFound": 0 },
+  { "id": "photoroom",  "name": "Photoroom",     "sourceType": "greenhouse", "sourceUrl": "https://boards.greenhouse.io/photoroom",   "sourceStatus": "queued", "lastChecked": null, "priority": "medium", "newJobsFound": 0 },
+  { "id": "figures",    "name": "Figures",       "sourceType": "ashby",      "sourceUrl": "https://jobs.ashbyhq.com/figures",         "sourceStatus": "queued", "lastChecked": null, "priority": "medium", "newJobsFound": 0 },
+  { "id": "poolside",   "name": "Poolside",      "sourceType": "lever",      "sourceUrl": "https://jobs.lever.co/poolside",           "sourceStatus": "queued", "lastChecked": null, "priority": "low",    "newJobsFound": 0 },
+  { "id": "nabla",      "name": "Nabla",         "sourceType": "greenhouse", "sourceUrl": "https://boards.greenhouse.io/nabla",       "sourceStatus": "queued", "lastChecked": null, "priority": "low",    "newJobsFound": 0 },
+  { "id": "doctrine",   "name": "Doctrine",      "sourceType": "custom",     "sourceUrl": "https://doctrine.fr/careers",              "sourceStatus": "queued", "lastChecked": null, "priority": "low",    "newJobsFound": 0 },
+  { "id": "yousign",    "name": "Yousign",       "sourceType": "ashby",      "sourceUrl": "https://jobs.ashbyhq.com/yousign",         "sourceStatus": "queued", "lastChecked": null, "priority": "medium", "newJobsFound": 0 }
+]
