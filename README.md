@@ -1,4 +1,4 @@
-# JobRadar — Agent-Powered SaaS for Job Seekers
+# JobRadar - Agent-Powered SaaS for Job Seekers
 
 JobRadar is an agent-powered SaaS prototype that monitors selected company career pages and notifies users when relevant roles appear.
 
