@@ -86,7 +86,7 @@ JobRadar is for:
 
 **Free to use for job seekers.**
 
-![JobRadar dashboard preview](./jobradar-onboarding.png)
+![JobRadar dashboard preview](./jobradar-onboarding-1.png)
 
 ---
 
@@ -127,13 +127,8 @@ This case study includes three prototype layers:
    - Matches page
    - Job Detail page
    - Agent Activity page
-  
-   - ## Open Prototype
 
-[Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-onboarding.html)
-
-> Standalone HTML prototypes. No backend, no API, no setup required.
-
+![JobRadar dashboard preview](./jobradar-onboarding.png)
 
 3. **Local agent simulation**
    - Reads local JSON data
@@ -174,6 +169,12 @@ Instead of treating onboarding as a generic form, the setup flow is designed as 
 - alert preferences
 - review before first scan
 
+  - ## Open Prototype
+
+[Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-onboarding.html)
+
+> Standalone HTML prototypes. No backend, no API, no setup required.
+
 ### 3. Dashboard Prototype
 
 The dashboard prototype shows the core SaaS experience after setup.
@@ -193,6 +194,14 @@ The dashboard includes:
 - agent activity
 - source status
 - dashboard states
+
+- ## Open Prototype
+
+[Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-dashboard.html)
+
+> Standalone HTML prototype. No backend, no API, no setup required.
+> 
+---
 
 ### 4. Local Agent Simulator
 
