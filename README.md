@@ -157,6 +157,10 @@ Mapped flows include:
 
 ### 2. Onboarding Prototype
 
+[Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-onboarding.html)
+
+> Standalone HTML prototypes. No backend, no API, no setup required.
+
 The onboarding prototype explores how users configure the agent.
 
 Instead of treating onboarding as a generic form, the setup flow is designed as a way for the user to teach the agent what to watch for:
@@ -170,13 +174,11 @@ Instead of treating onboarding as a generic form, the setup flow is designed as 
 - review before first scan
 
 
-  - ## Open Prototype
-
-[Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-onboarding.html)
-
-> Standalone HTML prototypes. No backend, no API, no setup required.
-
 ### 3. Dashboard Prototype
+
+[Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-dashboard.html)
+
+> Standalone HTML prototype. No backend, no API, no setup required.
 
 The dashboard prototype shows the core SaaS experience after setup.
 
@@ -195,13 +197,6 @@ The dashboard includes:
 - agent activity
 - source status
 - dashboard states
-
-  - ## Open Prototype
-
-[Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-dashboard.html)
-
-> Standalone HTML prototype. No backend, no API, no setup required.
-> 
 
 ---
 
