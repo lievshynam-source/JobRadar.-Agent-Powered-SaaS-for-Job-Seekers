@@ -69,3 +69,127 @@ JobRadar is for:
 5. Save, ignore, or apply faster
 
 **Free to use for job seekers.**
+
+
+## What Is Included
+
+This case study includes three prototype layers:
+
+1. **Product flows**
+   - Pre-onboarding flow
+   - Onboarding flow
+   - Main app flow
+   - Agent Activity / Trust flow
+   - Dashboard flow
+
+2. **Interactive prototypes**
+   - Onboarding prototype
+   - Dashboard prototype
+   - Matches page
+   - Job Detail page
+   - Agent Activity page
+
+3. **Local agent simulation**
+   - Reads local JSON data
+   - Simulates company monitoring
+   - Scores jobs with deterministic logic
+   - Generates match explanations
+   - Updates dashboard states
+   - Simulates source issues
+   - Supports save / ignore actions
+
+   ## Prototype Layers
+
+JobRadar was developed in layers, from product logic to coded prototype.
+
+### 1. Product Flows
+
+The first layer defines how the product works before focusing on UI polish.
+
+Mapped flows include:
+
+- Pre-onboarding: helps users understand the product promise before setup
+- Onboarding: collects companies, preferences, alerts, and review confirmation
+- Main App Flow: defines the core SaaS navigation and user actions
+- Agent Activity / Trust Flow: shows what the agent checked, found, filtered, or failed to access
+- Dashboard Flow: turns agent results into clear states and next actions
+
+### 2. Onboarding Prototype
+
+The onboarding prototype explores how users configure the agent.
+
+Instead of treating onboarding as a generic form, the setup flow is designed as a way for the user to teach the agent what to watch for:
+
+- target companies
+- preferred roles
+- locations
+- seniority
+- keywords
+- alert preferences
+- review before first scan
+
+### 3. Dashboard Prototype
+
+The dashboard prototype shows the core SaaS experience after setup.
+
+It is designed to answer three questions quickly:
+
+1. What happened?
+2. What matters now?
+3. What should I do next?
+
+The dashboard includes:
+
+- AI summary
+- top matches
+- saved jobs / pipeline
+- tracked companies
+- agent activity
+- source status
+- dashboard states
+
+### 4. Local Agent Simulator
+
+The local agent simulator is not a real AI agent yet.
+
+It is a lightweight front-end simulation that makes the product logic testable before building a real backend.
+
+It simulates:
+
+- company source checks
+- job scoring
+- match explanations
+- filtered jobs
+- source errors
+- activity logs
+- dashboard state updates
+- save / ignore feedback
+
+
+## What Is Real vs. Simulated
+
+### Real
+
+- Product concept
+- UX flows
+- Information architecture
+- SaaS dashboard structure
+- Onboarding logic
+- Trust and explainability patterns
+- Interactive HTML prototype
+- Local JSON data structure
+- Deterministic scoring logic
+- Dashboard states
+- Save / ignore interactions
+
+### Simulated
+
+- Real career-page scraping
+- Real AI / LLM reasoning
+- Backend infrastructure
+- User accounts
+- Persistent database
+- Live notifications
+- Live job availability
+
+This prototype is designed to prove the product experience, not production readiness.
