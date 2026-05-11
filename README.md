@@ -90,33 +90,33 @@ JobRadar is for:
 
 ---
 
-## What Is Included
+## Product Flows
 
-This case study includes three prototype layers:
+The first layer defines how the product works before focusing on UI polish.
 
-1. **Product flows**
-   - Pre-onboarding flow
-   - Onboarding flow
-   - Main app flow
-   - Agent Activity / Trust flow
-   - Dashboard flow
-  
+Mapped flows include:
+
+Pre-onboarding: helps users understand the product promise before setup  
 - ## Pre-onboarding flow
 
 ![JobRadar onboarding flow](./JobRadar-Pre-Onboarding-Flow.png)
-  
+
+Onboarding: collects companies, preferences, alerts, and review confirmation
    - ## Onboarding Flow
 
 ![JobRadar onboarding flow](./JobRadar-Onboarding-Flow.png)
 
+Main App Flow: defines the core SaaS navigation and user actions
    - ## Main app flow
 
 ![JobRadar onboarding flow](./JobRadar-Main-App-Flow.png)
 
+Agent Activity / Trust Flow: shows what the agent checked, found, filtered, or failed to access
    - ## Agent Activity / Trust flow
 
  ![JobRadar onboarding flow](./JobRadar-Agent-Activity-Trust-Flow.png)
 
+Dashboard Flow: turns agent results into clear states and next actions
    - ## Dashboard flow
 
  ![JobRadar onboarding flow](./JobRadar-Dashboard-Flow.png)
@@ -141,17 +141,6 @@ This case study includes three prototype layers:
 
 JobRadar was developed in layers, from product logic to coded prototype.
 
-### 1. Product Flows
-
-The first layer defines how the product works before focusing on UI polish.
-
-Mapped flows include:
-
-- Pre-onboarding: helps users understand the product promise before setup
-- Onboarding: collects companies, preferences, alerts, and review confirmation
-- Main App Flow: defines the core SaaS navigation and user actions
-- Agent Activity / Trust Flow: shows what the agent checked, found, filtered, or failed to access
-- Dashboard Flow: turns agent results into clear states and next actions
 
 ### 2. Onboarding Prototype
 
