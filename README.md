@@ -104,6 +104,10 @@ This case study includes three prototype layers:
    - Main app flow
    - Agent Activity / Trust flow
    - Dashboard flow
+  
+   - ## Onboarding Flow
+
+![JobRadar onboarding flow](./JobRadar-Onboarding-Flow.png)
 
 2. **Interactive prototypes**
    - Onboarding prototype
