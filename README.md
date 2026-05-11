@@ -169,6 +169,7 @@ Instead of treating onboarding as a generic form, the setup flow is designed as 
 - alert preferences
 - review before first scan
 
+
   - ## Open Prototype
 
 [Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-onboarding.html)
@@ -195,12 +196,13 @@ The dashboard includes:
 - source status
 - dashboard states
 
-- ## Open Prototype
+  - ## Open Prototype
 
 [Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-dashboard.html)
 
 > Standalone HTML prototype. No backend, no API, no setup required.
 > 
+
 ---
 
 ### 4. Local Agent Simulator
