@@ -91,8 +91,8 @@ JobRadar is for:
 [Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-onboarding.html)
 
 > Standalone HTML prototypes. No backend, no API, no setup required.
->
-> ---
+
+![JobRadar dashboard preview](./jobradar-dashboard%20Strong%20maches.png)
 
 ## What Is Included
 
