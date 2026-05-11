@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JobRadar — Onboarding</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 13px; background: #F0F0F2; color: #111114; line-height: 1.5; min-height: 100vh;
+}
+
+/* ── PROTO BAR ─────────────────────────────────────────────── */
+#proto-bar {
+  background: #0A0A0C; border-bottom: 1px solid #1A1A1E;
+  padding: 7px 18px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  position: sticky; top: 0; z-index: 200;
+}
+#proto-bar.hidden { display: none; }
+.proto-label { font-size: 9px; color: #383838; text-transform: uppercase; letter-spacing: .09em; font-family: "SF Mono","Fira Mono",monospace; white-space: nowrap; }
+.proto-sep { width: 1px; height: 16px; background: #1E1E22; flex-shrink: 0; }
+.pb { font-size: 11px; font-family: inherit; padding: 3px 11px; border: 1px solid #404041; border-radius: 20px; background: transparent; color: #B0B0B0; cursor: pointer; transition: all .12s; white-space: nowrap; }
+.pb:hover { border-color: #555; color: #d0d0d0; }
+.pb.active { background: #2B5CF6; border-color: #2B5CF6; color: #fff; }
+.hide-btn { margin-left: auto; font-size: 9px; font-family: "SF Mono","Fira Mono",monospace; padding: 3px 10px; border: 1px solid #2A2A2E; border-radius: 20px; background: transparent; color: #404044; cursor: pointer; }
+.hide-btn:hover { color: #888; }
+#restore-btn { display: none; position: fixed; top: 10px; right: 16px; z-index: 300; font-size: 10px; font-family: "SF Mono","Fira Mono",monospace; padding: 4px 12px; border: 1px solid #333; border-radius: 20px; background: #0A0A0C; color: #666; cursor: pointer; }
+#restore-btn:hover { color: #aaa; }
+
+/* ── SHELL ─────────────────────────────────────────────────── */
+.shell {
+  min-height: calc(100vh - 38px);
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  grid-template-rows: 56px 1fr;
+}
+
+/* ── LEFT PANEL (progress) ─────────────────────────────────── */
+.left-panel {
+  grid-row: 1 / 3;
+  background: #18181B;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+.lp-logo { padding: 18px 22px 16px; font-size: 15px; font-weight: 700; color: #F5F5F8; border-bottom: 1px solid #252528; letter-spacing: -.3px; }
+.lp-logo span { color: #3B7EF6; }
+.lp-steps { padding: 24px 0 0; flex: 1; }
+.lp-step {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 22px; cursor: pointer; transition: background .1s;
+  position: relative;
+}
+.lp-step:hover { background: #222225; }
+.lp-step.active { background: #202024; }
+.step-indicator {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; font-family: "SF Mono","Fira Mono",monospace;
+  margin-top: 1px;
+  transition: all .2s;
+}
+.step-indicator.done     { background: #3B7EF6; color: #fff; }
+.step-indicator.active   { background: #fff; color: #111114; }
+.step-indicator.upcoming { background: #2A2A2E; color: #555; border: 1px solid #333; }
+.step-connector {
+  position: absolute; left: 32px; top: 34px;
+  width: 1px; height: 16px; background: #2A2A2E;
+}
+.step-connector.done { background: #3B7EF6; opacity: .4; }
+.step-text { flex: 1; }
+.step-title { font-size: 11px; font-weight: 500; color: #888; line-height: 1.3; }
+.step-title.active   { color: #F5F5F8; }
+.step-title.done     { color: #5A9CF6; }
+.step-sub { font-size: 9px; color: #444; margin-top: 1px; }
+.step-sub.active { color: #666; }
+.lp-footer { padding: 18px 22px; border-top: 1px solid #252528; }
+.lp-footer-note { font-size: 10px; color: #3A3A3E; font-family: "SF Mono","Fira Mono",monospace; line-height: 1.6; }
+
+/* ── TOPBAR ─────────────────────────────────────────────────── */
+.topbar {
+  grid-column: 2; background: #fff; border-bottom: 1px solid #E4E4E7;
+  display: flex; align-items: center; justify-content: space-between; padding: 0 36px;
+}
+.tb-left { display: flex; flex-direction: column; gap: 1px; }
+.tb-title { font-size: 13px; font-weight: 600; color: #111114; }
+.tb-sub   { font-size: 10px; color: #A8A8B2; }
+.progress-bar-wrap { flex: 1; max-width: 240px; margin: 0 32px; }
+.progress-bar-track { height: 4px; background: #E8E8EC; border-radius: 2px; overflow: hidden; }
+.progress-bar-fill  { height: 100%; background: #3B7EF6; border-radius: 2px; transition: width .3s; }
+.progress-label { font-size: 9px; color: #A8A8B2; font-family: "SF Mono","Fira Mono",monospace; margin-top: 4px; text-align: right; }
+.skip-link { font-size: 10px; color: #9A9AA8; cursor: pointer; }
+.skip-link:hover { color: #5A5A68; text-decoration: underline; }
+
+/* ── MAIN CONTENT ──────────────────────────────────────────── */
+.main {
+  grid-column: 2;
+  padding: 36px 48px 48px;
+  overflow-y: auto;
+  background: #F4F4F6;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── SCREEN WRAPPER ────────────────────────────────────────── */
+.screen { display: flex; flex-direction: column; gap: 24px; max-width: 680px; }
+.screen-header { margin-bottom: 4px; }
+.screen-eyebrow { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #3B7EF6; margin-bottom: 8px; }
+.screen-title   { font-size: 22px; font-weight: 700; color: #111114; line-height: 1.2; margin-bottom: 8px; }
+.screen-desc    { font-size: 13px; color: #5A5A68; line-height: 1.7; max-width: 520px; }
+
+/* ── FORM CARDS ────────────────────────────────────────────── */
+.fcard { background: #fff; border: 1px solid #E4E4E7; border-radius: 12px; overflow: hidden; }
+.fcard-section { padding: 18px 20px; border-bottom: 1px solid #F0F0F2; }
+.fcard-section:last-child { border-bottom: none; }
+.fcard-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+  color: #9A9AA8; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+}
+.optional-badge {
+  font-size: 8px; font-weight: 600; padding: 2px 6px; border-radius: 3px;
+  background: #F4F4F6; color: #9A9AA8; letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.fcard-hint { font-size: 11px; color: #9A9AA8; margin-top: 6px; line-height: 1.5; }
+
+/* ── INPUTS ────────────────────────────────────────────────── */
+.field-wrap { margin-bottom: 10px; }
+.field-wrap:last-child { margin-bottom: 0; }
+.field-label { font-size: 11px; font-weight: 500; color: #3A3A48; margin-bottom: 5px; display: block; }
+.field-input {
+  width: 100%; padding: 9px 12px; border: 1px solid #E0E0E8; border-radius: 7px;
+  font-size: 12px; font-family: inherit; color: #111114; background: #fff;
+  transition: border-color .12s;
+  outline: none;
+}
+.field-input:focus { border-color: #3B7EF6; box-shadow: 0 0 0 3px rgba(59,126,246,.08); }
+.field-input::placeholder { color: #C0C0C8; }
+.field-input.filled { border-color: #D0D8FF; background: #FAFBFF; }
+
+/* ── TAGS INPUT (chips) ────────────────────────────────────── */
+.tags-input-wrap {
+  min-height: 42px; padding: 7px 10px; border: 1px solid #E0E0E8; border-radius: 7px;
+  display: flex; flex-wrap: wrap; gap: 5px; align-items: center; cursor: text;
+  background: #fff; transition: border-color .12s;
+}
+.tags-input-wrap:focus-within { border-color: #3B7EF6; box-shadow: 0 0 0 3px rgba(59,126,246,.08); }
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #EEF4FF; border: 1px solid #C5D8FF; color: #1E40AF;
+  font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 5px;
+}
+.chip-x { cursor: pointer; color: #93AEDD; font-size: 13px; line-height: 1; }
+.chip-x:hover { color: #1E40AF; }
+.chip-input { border: none; outline: none; font-size: 12px; font-family: inherit; color: #111114; min-width: 80px; flex: 1; background: transparent; }
+.chip-input::placeholder { color: #C0C0C8; }
+
+/* ── CHOICE GROUPS ─────────────────────────────────────────── */
+.choice-group { display: flex; flex-wrap: wrap; gap: 7px; }
+.choice-btn {
+  font-size: 11px; font-family: inherit; padding: 6px 14px;
+  border: 1px solid #E0E0E8; border-radius: 7px; background: #fff;
+  color: #5A5A68; cursor: pointer; transition: all .12s; font-weight: 500;
+}
+.choice-btn:hover { border-color: #93C5FD; color: #1E40AF; background: #F4F8FF; }
+.choice-btn.sel { background: #EEF4FF; border-color: #3B7EF6; color: #1E40AF; }
+
+/* ── TOGGLE CHOICE (alert type) ───────────────────────────── */
+.toggle-group { display: flex; border: 1px solid #E0E0E8; border-radius: 8px; overflow: hidden; }
+.toggle-opt {
+  flex: 1; padding: 9px 8px; text-align: center; font-size: 11px; font-family: inherit;
+  border: none; background: #fff; color: #5A5A68; cursor: pointer; transition: all .12s;
+  font-weight: 500; border-right: 1px solid #E0E0E8;
+}
+.toggle-opt:last-child { border-right: none; }
+.toggle-opt:hover { background: #F4F8FF; color: #1E40AF; }
+.toggle-opt.sel { background: #EEF4FF; color: #1E40AF; font-weight: 600; }
+
+/* ── RANGE INPUT ───────────────────────────────────────────── */
+.range-wrap { display: flex; align-items: center; gap: 12px; }
+.range-input {
+  flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px;
+  background: linear-gradient(to right, #3B7EF6 0%, #3B7EF6 40%, #E4E4E8 40%);
+  outline: none;
+}
+.range-input::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; border: 2px solid #3B7EF6; cursor: pointer;
+}
+.range-value { font-size: 12px; font-weight: 600; color: #111114; font-family: "SF Mono","Fira Mono",monospace; min-width: 54px; text-align: right; }
+
+/* ── DEFAULT ALERT CARD ────────────────────────────────────── */
+.default-card {
+  background: #F8F8FA; border: 1px solid #E4E4E7; border-radius: 8px;
+  padding: 12px 14px; display: flex; align-items: flex-start; gap: 12px;
+}
+.default-check { width: 18px; height: 18px; border-radius: 50%; background: #3B7EF6; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; }
+.default-check svg { width: 10px; height: 10px; stroke: #fff; stroke-width: 3; fill: none; }
+.default-text { flex: 1; }
+.default-title { font-size: 11px; font-weight: 600; color: #111114; margin-bottom: 2px; }
+.default-sub   { font-size: 10px; color: #7A7A88; line-height: 1.5; }
+.default-change { font-size: 10px; color: #3B7EF6; cursor: pointer; margin-top: 6px; display: inline-block; }
+.default-change:hover { text-decoration: underline; }
+
+/* ── REVIEW SCREEN ─────────────────────────────────────────── */
+.review-section { margin-bottom: 0; }
+.review-block {
+  background: #fff; border: 1px solid #E4E4E7; border-radius: 12px; overflow: hidden; margin-bottom: 12px;
+}
+.review-block:last-child { margin-bottom: 0; }
+.rb-header {
+  padding: 12px 16px; background: #FAFAFA; border-bottom: 1px solid #F0F0F2;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.rb-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #9A9AA8; }
+.rb-edit  { font-size: 10px; color: #3B7EF6; cursor: pointer; }
+.rb-edit:hover { text-decoration: underline; }
+.rb-body { padding: 12px 16px; }
+.rb-row { display: flex; gap: 8px; padding: 4px 0; font-size: 11px; align-items: flex-start; }
+.rb-row + .rb-row { border-top: 1px solid #F4F4F6; }
+.rb-key { color: #9A9AA8; flex: 0 0 120px; font-weight: 500; }
+.rb-val { color: #111114; flex: 1; line-height: 1.5; }
+.rb-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.rb-chip { font-size: 10px; padding: 2px 8px; background: #EEF4FF; border: 1px solid #C5D8FF; color: #1E40AF; border-radius: 4px; font-weight: 500; }
+/* Agent preview box */
+.agent-preview {
+  background: #F7FAFF; border: 1px solid #C5D8FF; border-left: 3px solid #3B7EF6;
+  border-radius: 0 10px 10px 0; padding: 14px 16px;
+}
+.agent-preview-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #3B7EF6; margin-bottom: 8px; }
+.agent-preview-line { font-size: 11px; color: #3A3A68; line-height: 1.7; display: flex; gap: 8px; align-items: flex-start; padding: 2px 0; }
+.apli { color: #3B7EF6; flex-shrink: 0; font-weight: 700; }
+
+/* ── ACTIVATION SCREEN ─────────────────────────────────────── */
+.activation-wrap {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  padding: 32px 0 0; max-width: 480px; margin: 0 auto;
+}
+.activation-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: #EEF4FF; border: 2px solid #C5D8FF;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+}
+.activation-icon svg { width: 28px; height: 28px; stroke: #3B7EF6; stroke-width: 2; fill: none; }
+.activation-title { font-size: 22px; font-weight: 700; color: #111114; margin-bottom: 10px; line-height: 1.2; }
+.activation-sub   { font-size: 13px; color: #5A5A68; line-height: 1.7; margin-bottom: 24px; max-width: 400px; }
+.activation-status {
+  background: #fff; border: 1px solid #E4E4E7; border-radius: 10px;
+  padding: 16px 20px; width: 100%; margin-bottom: 24px; text-align: left;
+}
+.as-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; font-size: 11px; color: #3A3A48; }
+.as-row + .as-row { border-top: 1px solid #F4F4F6; }
+.as-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.as-dot-blue  { background: #3B7EF6; }
+.as-dot-green { background: #4CAF50; }
+.as-dot-gray  { background: #C8C8D4; }
+.activation-note { font-size: 11px; color: #9A9AA8; line-height: 1.6; margin-bottom: 28px; max-width: 360px; }
+
+/* ── BOTTOM NAV ────────────────────────────────────────────── */
+.bottom-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 8px;
+}
+.btn-back {
+  font-size: 12px; font-family: inherit; padding: 10px 20px;
+  border: 1px solid #E0E0E8; border-radius: 8px; background: #fff;
+  color: #5A5A68; cursor: pointer; font-weight: 500; transition: all .12s;
+}
+.btn-back:hover { background: #F4F4F6; }
+.btn-next {
+  font-size: 12px; font-family: inherit; padding: 10px 28px;
+  border: 1px solid #3B7EF6; border-radius: 8px; background: #3B7EF6;
+  color: #fff; cursor: pointer; font-weight: 600; transition: all .12s;
+}
+.btn-next:hover { background: #2563EB; border-color: #2563EB; }
+.btn-cta {
+  font-size: 13px; font-family: inherit; padding: 12px 36px;
+  border: none; border-radius: 9px; background: #3B7EF6;
+  color: #fff; cursor: pointer; font-weight: 700; transition: all .12s;
+}
+.btn-cta:hover { background: #2563EB; }
+.btn-skip { font-size: 11px; color: #9A9AA8; cursor: pointer; }
+.btn-skip:hover { color: #5A5A68; text-decoration: underline; }
+
+/* ── TRUST NOTE ────────────────────────────────────────────── */
+.trust-note {
+  display: flex; align-items: flex-start; gap: 8px;
+  background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 7px;
+  padding: 9px 12px; font-size: 11px; color: #78350F; line-height: 1.5;
+}
+.tn-icon { flex-shrink: 0; margin-top: 1px; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div id="proto-bar">
+  <div style="display:flex;align-items:center;gap:5px">
+    <span class="proto-label">Screen</span>
+    <button class="pb active" onclick="goScreen(0,this)">1 · Job Preferences</button>
+    <button class="pb" onclick="goScreen(1,this)">2 · Location & Salary</button>
+    <button class="pb" onclick="goScreen(2,this)">3 · Keywords</button>
+    <button class="pb" onclick="goScreen(3,this)">4 · Alerts</button>
+    <button class="pb" onclick="goScreen(4,this)">5 · Review</button>
+    <button class="pb" onclick="goScreen(5,this)">6 · Activated</button>
+  </div>
+  <button class="hide-btn" onclick="hideBar()">Hide toolbar ↑</button>
+</div>
+<button id="restore-btn" onclick="showBar()">Show toolbar ↓</button>
+
+<div class="shell">
+
+  <!-- LEFT PANEL -->
+  <aside class="left-panel">
+    <div class="lp-logo">Job<span>Radar</span></div>
+    <div class="lp-steps" id="lp-steps"></div>
+    <div class="lp-footer">
+      <div class="lp-footer-note">You can change these<br>settings any time from<br>your dashboard.</div>
+    </div>
+  </aside>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-title" id="tb-title">Set up your agent</div>
+      <div class="tb-sub" id="tb-sub">Step 1 of 6</div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-track"><div class="progress-bar-fill" id="prog-fill" style="width:16%"></div></div>
+      <div class="progress-label" id="prog-label">1 of 6</div>
+    </div>
+    <span class="skip-link">Save & exit</span>
+  </div>
+
+  <!-- MAIN -->
+  <main class="main" id="main"></main>
+
+</div>
+
+<script>
+const STEPS = [
+  { label:"Job Preferences",   sub:"Titles, seniority, type"  },
+  { label:"Location & Salary", sub:"Where and how you work"   },
+  { label:"Keywords & Filters",sub:"Skills and topics"        },
+  { label:"Alert Preferences", sub:"How you want to be notified" },
+  { label:"Review & Confirm",  sub:"Check everything looks right" },
+  { label:"Agent Activated",   sub:"You're all set"           },
+];
+
+let cur = 0;
+
+function hideBar(){ document.getElementById("proto-bar").classList.add("hidden"); document.getElementById("restore-btn").style.display="block"; }
+function showBar(){ document.getElementById("proto-bar").classList.remove("hidden"); document.getElementById("restore-btn").style.display="none"; }
+
+function goScreen(i, btn){
+  cur = i;
+  if(btn){ document.querySelectorAll("#proto-bar .pb").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); }
+  renderSidebar();
+  renderTopbar();
+  renderMain();
+}
+
+function renderSidebar(){
+  const el = document.getElementById("lp-steps");
+  el.innerHTML = STEPS.map((s,i) => {
+    const state = i < cur ? "done" : i === cur ? "active" : "upcoming";
+    const connector = i < STEPS.length - 1 ? `<div class="step-connector ${i < cur ? 'done' : ''}"></div>` : "";
+    return `<div class="lp-step ${state === "active" ? "active" : ""}" onclick="goScreen(${i},document.querySelectorAll('#proto-bar .pb')[${i}])">
+      <div class="step-indicator ${state}">${state === "done" ? "✓" : i+1}</div>
+      <div class="step-text">
+        <div class="step-title ${state === "active" ? "active" : state === "done" ? "done" : ""}">${s.label}</div>
+        <div class="step-sub ${state === "active" ? "active" : ""}">${s.sub}</div>
+      </div>
+      ${connector}
+    </div>`;
+  }).join("");
+}
+
+function renderTopbar(){
+  const pct = Math.round((cur / (STEPS.length - 1)) * 100);
+  document.getElementById("tb-title").textContent = cur < 5 ? "Set up your agent" : "You're all set";
+  document.getElementById("tb-sub").textContent = cur < 5 ? `Step ${cur+1} of 6` : "Setup complete";
+  document.getElementById("prog-fill").style.width = pct + "%";
+  document.getElementById("prog-label").textContent = cur < 5 ? `${cur+1} of 6` : "Complete";
+}
+
+/* ── SCREENS ───────────────────────────────────────────────── */
+function renderMain(){
+  const el = document.getElementById("main");
+  const screens = [s1, s2, s3, s4, s5, s6];
+  el.innerHTML = screens[cur]();
+}
+
+/* ── SCREEN 1: JOB PREFERENCES ─────────────────────────────── */
+function s1(){
+  return `<div class="screen">
+    <div class="screen-header">
+      <div class="screen-eyebrow">Step 1 · Job Preferences</div>
+      <div class="screen-title">What kind of roles are you looking for?</div>
+      <div class="screen-desc">Your agent will use these preferences to find and score relevant roles. Be as specific as you like — you can always edit later.</div>
+    </div>
+
+    <div class="fcard">
+      <div class="fcard-section">
+        <div class="fcard-label">Target job titles</div>
+        <div class="tags-input-wrap" id="titles-wrap">
+          <span class="chip">UX Lead <span class="chip-x" onclick="removeChip(this)">×</span></span>
+          <span class="chip">Product Designer <span class="chip-x" onclick="removeChip(this)">×</span></span>
+          <span class="chip">Head of Design <span class="chip-x" onclick="removeChip(this)">×</span></span>
+          <input class="chip-input" placeholder="Add a title and press Enter…" onkeydown="addChip(event,'titles-wrap')">
+        </div>
+        <div class="fcard-hint">Add multiple titles. The agent will treat them as equivalent alternatives.</div>
+      </div>
+      <div class="fcard-section">
+        <div class="fcard-label">Seniority level</div>
+        <div class="choice-group">
+          <button class="choice-btn" onclick="toggleChoice(this)">Junior</button>
+          <button class="choice-btn" onclick="toggleChoice(this)">Mid-level</button>
+          <button class="choice-btn sel" onclick="toggleChoice(this)">Senior</button>
+          <button class="choice-btn sel" onclick="toggleChoice(this)">Lead / Staff</button>
+          <button class="choice-btn" onclick="toggleChoice(this)">Principal</button>
+          <button class="choice-btn" onclick="toggleChoice(this)">Head / Director</button>
+        </div>
+        <div class="fcard-hint">Select all that apply. Roles outside these levels will receive a lower match score.</div>
+      </div>
+      <div class="fcard-section">
+        <div class="fcard-label">Employment type</div>
+        <div class="choice-group">
+          <button class="choice-btn sel" onclick="toggleChoice(this)">Full-time</button>
+          <button class="choice-btn" onclick="toggleChoice(this)">Contract</button>
+          <button class="choice-btn" onclick="toggleChoice(this)">Part-time</button>
+          <button class="choice-btn" onclick="toggleChoice(this)">Freelance</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="trust-note">
+      <span class="tn-icon">ℹ</span>
+      <span>Your agent uses job titles as signals, not exact-match filters. It will surface roles with different titles if the scope and level match.</span>
+    </div>
+
+    <div class="bottom-nav">
+      <span></span>
+      <button class="btn-next" onclick="goScreen(1,document.querySelectorAll('#proto-bar .pb')[1])">Continue →</button>
+    </div>
+  </div>`;
+}
+
+/* ── SCREEN 2: LOCATION & SALARY ────────────────────────────── */
+function s2(){
+  return `<div class="screen">
+    <div class="screen-header">
+      <div class="screen-eyebrow">Step 2 · Location & Salary</div>
+      <div class="screen-title">Where do you want to work?</div>
+      <div class="screen-desc">Set your location preferences and an optional salary range. The agent will prioritise roles that match.</div>
+    </div>
+
+    <div class="fcard">
+      <div class="fcard-section">
+        <div class="fcard-label">Preferred locations</div>
+        <div class="tags-input-wrap">
+          <span class="chip">Paris <span class="chip-x" onclick="removeChip(this)">×</span></span>
+          <span class="chip">Remote — Europe <span class="chip-x" onclick="removeChip(this)">×</span></span>
+          <input class="chip-input" placeholder="Add a city or region…">
+        </div>
+        <div class="fcard-hint">Add cities, countries, or regions. "Remote — Europe" counts as a location preference.</div>
+      </div>
+      <div class="fcard-section">
+        <div class="fcard-label">Work mode</div>
+        <div class="toggle-group">
+          <button class="toggle-opt sel" onclick="toggleSingle(this)">On-site</button>
+          <button class="toggle-opt sel" onclick="toggleSingle(this)">Hybrid</button>
+          <button class="toggle-opt sel" onclick="toggleSingle(this)">Remote</button>
+        </div>
+        <div class="fcard-hint">Select all you'd accept. Unselected modes will lower a role's match score.</div>
+      </div>
+      <div class="fcard-section">
+        <div class="fcard-label">Salary range <span class="optional-badge">Optional</span></div>
+        <div class="range-wrap" style="margin-bottom:10px">
+          <span style="font-size:11px;color:#9A9AA8;min-width:32px">Min</span>
+          <input type="range" class="range-input" min="30" max="200" value="70" oninput="updateRange(this,'minval')">
+          <span class="range-value" id="minval">70k €</span>
+        </div>
+        <div class="range-wrap">
+          <span style="font-size:11px;color:#9A9AA8;min-width:32px">Max</span>
+          <input type="range" class="range-input" min="30" max="300" value="130" oninput="updateRange(this,'maxval')">
+          <span class="range-value" id="maxval">130k €</span>
+        </div>
+        <div class="fcard-hint">Optional. Used only to filter and score — not shown to companies.</div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="btn-back" onclick="goScreen(0,document.querySelectorAll('#proto-bar .pb')[0])">← Back</button>
+      <button class="btn-next" onclick="goScreen(2,document.querySelectorAll('#proto-bar .pb')[2])">Continue →</button>
+    </div>
+  </div>`;
+}
+
+/* ── SCREEN 3: KEYWORDS ─────────────────────────────────────── */
+function s3(){
+  return `<div class="screen">
+    <div class="screen-header">
+      <div class="screen-eyebrow">Step 3 · Keywords & Filters</div>
+      <div class="screen-title">What topics matter to you?</div>
+      <div class="screen-desc">Add skills, domains, or topics your agent should watch for. Both fields are optional — the more context you give, the better the matches.</div>
+    </div>
+
+    <div class="fcard">
+      <div class="fcard-section">
+        <div class="fcard-label">Include — skills, domains, topics</div>
+        <div class="tags-input-wrap">
+          <span class="chip">AI products <span class="chip-x" onclick="removeChip(this)">×</span></span>
+          <span class="chip">Agentic UX <span class="chip-x" onclick="removeChip(this)">×</span></span>
+          <span class="chip">Design systems <span class="chip-x" onclick="removeChip(this)">×</span></span>
+          <span class="chip">B2B SaaS <span class="chip-x" onclick="removeChip(this)">×</span></span>
+          <span class="chip">Accessibility <span class="chip-x" onclick="removeChip(this)">×</span></span>
+          <input class="chip-input" placeholder="Add a skill or topic…">
+        </div>
+        <div class="fcard-hint">These boost the match score when found in a job description.</div>
+      </div>
+      <div class="fcard-section">
+        <div class="fcard-label">Exclude <span class="optional-badge">Optional</span></div>
+        <div class="tags-input-wrap">
+          <span class="chip" style="background:#FFF2F2;border-color:#FFC5C5;color:#9B1C1C">Gaming <span class="chip-x" style="color:#FCA5A5" onclick="removeChip(this)">×</span></span>
+          <span class="chip" style="background:#FFF2F2;border-color:#FFC5C5;color:#9B1C1C">e-commerce only <span class="chip-x" style="color:#FCA5A5" onclick="removeChip(this)">×</span></span>
+          <input class="chip-input" placeholder="Add keyword to exclude…">
+        </div>
+        <div class="fcard-hint">Roles matching these keywords will score lower or be hidden. Use sparingly.</div>
+      </div>
+    </div>
+
+    <div class="trust-note">
+      <span class="tn-icon">ℹ</span>
+      <span>Keywords are signals, not hard filters. Your agent learns from what you save and ignore — so these will improve over time.</span>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="btn-back" onclick="goScreen(1,document.querySelectorAll('#proto-bar .pb')[1])">← Back</button>
+      <button class="btn-next" onclick="goScreen(3,document.querySelectorAll('#proto-bar .pb')[3])">Continue →</button>
+    </div>
+  </div>`;
+}
+
+/* ── SCREEN 4: ALERTS ───────────────────────────────────────── */
+function s4(){
+  return `<div class="screen">
+    <div class="screen-header">
+      <div class="screen-eyebrow">Step 4 · Alert Preferences</div>
+      <div class="screen-title">How do you want to be notified?</div>
+      <div class="screen-desc">Smart defaults are already set for you. You can customise now or change anytime from settings.</div>
+    </div>
+
+    <div class="fcard">
+      <div class="fcard-section">
+        <div class="fcard-label">Defaults — active now</div>
+        <div class="default-card">
+          <div class="default-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+          <div class="default-text">
+            <div class="default-title">Daily digest · In-app + email</div>
+            <div class="default-sub">You'll receive a summary once a day when new matches are found. No alerts on days with no results.</div>
+            <a class="default-change" onclick="document.getElementById('custom-section').style.display='block';this.style.display='none'">Customise instead →</a>
+          </div>
+        </div>
+      </div>
+      <div class="fcard-section" id="custom-section" style="display:none">
+        <div class="fcard-label">Alert frequency</div>
+        <div class="toggle-group" style="margin-bottom:14px">
+          <button class="toggle-opt" onclick="toggleSingle(this)">Instant</button>
+          <button class="toggle-opt sel" onclick="toggleSingle(this)">Daily digest</button>
+          <button class="toggle-opt" onclick="toggleSingle(this)">Weekly</button>
+        </div>
+        <div class="fcard-label">Notification channel</div>
+        <div class="choice-group">
+          <button class="choice-btn sel" onclick="toggleChoice(this)">In-app</button>
+          <button class="choice-btn sel" onclick="toggleChoice(this)">Email</button>
+        </div>
+        <div class="fcard-hint" style="margin-top:8px">In-app alerts appear in your dashboard. Email alerts are sent to levshina.corporate@gmail.com.</div>
+      </div>
+    </div>
+
+    <div class="trust-note">
+      <span class="tn-icon">ℹ</span>
+      <span>Instant alerts are best when you're actively searching. Daily digest is recommended for passive monitoring — less noise, same signal.</span>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="btn-back" onclick="goScreen(2,document.querySelectorAll('#proto-bar .pb')[2])">← Back</button>
+      <button class="btn-next" onclick="goScreen(4,document.querySelectorAll('#proto-bar .pb')[4])">Continue →</button>
+    </div>
+  </div>`;
+}
+
+/* ── SCREEN 5: REVIEW ───────────────────────────────────────── */
+function s5(){
+  return `<div class="screen" style="max-width:720px">
+    <div class="screen-header">
+      <div class="screen-eyebrow">Step 5 · Review & Confirm</div>
+      <div class="screen-title">Everything look right?</div>
+      <div class="screen-desc">Review your setup before your agent starts. You can edit anything now or change it later from the dashboard.</div>
+    </div>
+
+    <div class="review-block">
+      <div class="rb-header"><span class="rb-title">Tracked companies</span><a class="rb-edit" onclick="alert('In a real prototype this would open the company selection step')">Edit</a></div>
+      <div class="rb-body">
+        <div class="rb-row"><span class="rb-key">Companies</span><span class="rb-val"><div class="rb-chips"><span class="rb-chip">Mistral AI</span><span class="rb-chip">Hugging Face</span><span class="rb-chip">Alan</span><span class="rb-chip">Photoroom</span><span class="rb-chip">Figures</span><span class="rb-chip">Yousign</span></div></span></div>
+        <div class="rb-row"><span class="rb-key">Total</span><span class="rb-val">6 companies selected · agent will monitor all career pages</span></div>
+      </div>
+    </div>
+
+    <div class="review-block">
+      <div class="rb-header"><span class="rb-title">Job preferences</span><a class="rb-edit" onclick="goScreen(0,document.querySelectorAll('#proto-bar .pb')[0])">Edit</a></div>
+      <div class="rb-body">
+        <div class="rb-row"><span class="rb-key">Titles</span><span class="rb-val"><div class="rb-chips"><span class="rb-chip">UX Lead</span><span class="rb-chip">Product Designer</span><span class="rb-chip">Head of Design</span></div></span></div>
+        <div class="rb-row"><span class="rb-key">Seniority</span><span class="rb-val">Senior, Lead / Staff</span></div>
+        <div class="rb-row"><span class="rb-key">Type</span><span class="rb-val">Full-time</span></div>
+        <div class="rb-row"><span class="rb-key">Location</span><span class="rb-val">Paris, Remote — Europe · Hybrid & Remote accepted</span></div>
+        <div class="rb-row"><span class="rb-key">Salary</span><span class="rb-val">70k – 130k € (not shared with companies)</span></div>
+        <div class="rb-row"><span class="rb-key">Keywords</span><span class="rb-val"><div class="rb-chips"><span class="rb-chip">AI products</span><span class="rb-chip">Agentic UX</span><span class="rb-chip">Design systems</span><span class="rb-chip">B2B SaaS</span></div></span></div>
+        <div class="rb-row"><span class="rb-key">Excluded</span><span class="rb-val" style="color:#9B1C1C">Gaming, e-commerce only</span></div>
+      </div>
+    </div>
+
+    <div class="review-block">
+      <div class="rb-header"><span class="rb-title">Alert settings</span><a class="rb-edit" onclick="goScreen(3,document.querySelectorAll('#proto-bar .pb')[3])">Edit</a></div>
+      <div class="rb-body">
+        <div class="rb-row"><span class="rb-key">Frequency</span><span class="rb-val">Daily digest</span></div>
+        <div class="rb-row"><span class="rb-key">Channels</span><span class="rb-val">In-app + email</span></div>
+        <div class="rb-row"><span class="rb-key">Email</span><span class="rb-val" style="color:#5A5A68">levshina.corporate@gmail.com</span></div>
+      </div>
+    </div>
+
+    <div class="agent-preview">
+      <div class="agent-preview-title">What your agent will do</div>
+      <div class="agent-preview-line"><span class="apli">→</span> Monitor 6 company career pages daily for new roles</div>
+      <div class="agent-preview-line"><span class="apli">→</span> Score each role against your preferences and keywords</div>
+      <div class="agent-preview-line"><span class="apli">→</span> Surface only relevant matches — no noise, no full-internet search</div>
+      <div class="agent-preview-line"><span class="apli">→</span> Send you a daily digest when new matches are found</div>
+      <div class="agent-preview-line"><span class="apli">→</span> Learn from what you save and ignore over time</div>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="btn-back" onclick="goScreen(3,document.querySelectorAll('#proto-bar .pb')[3])">← Back</button>
+      <button class="btn-next" onclick="goScreen(5,document.querySelectorAll('#proto-bar .pb')[5])">Confirm & start monitoring →</button>
+    </div>
+  </div>`;
+}
+
+/* ── SCREEN 6: ACTIVATED ────────────────────────────────────── */
+function s6(){
+  return `<div class="screen">
+    <div class="activation-wrap">
+      <div class="activation-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07M8.46 8.46a5 5 0 0 0 0 7.07"/></svg>
+      </div>
+      <div class="activation-title">Your agent is now active</div>
+      <div class="activation-sub">Monitoring has started across 6 companies. Your first results may take a few hours — your agent is reading career pages for the first time.</div>
+
+      <div class="activation-status">
+        <div class="as-row"><div class="as-dot as-dot-green"></div><span>6 companies added to monitoring queue</span></div>
+        <div class="as-row"><div class="as-dot as-dot-blue"></div><span>First scan in progress — results within 24h</span></div>
+        <div class="as-row"><div class="as-dot as-dot-blue"></div><span>Daily digest enabled · in-app + email</span></div>
+        <div class="as-row"><div class="as-dot as-dot-gray"></div><span>Agent will learn from your saves and ignores</span></div>
+      </div>
+
+      <div class="activation-note">You'll receive a notification as soon as the first relevant match is found. In the meantime, you can add more companies or adjust preferences from your dashboard.</div>
+
+      <button class="btn-cta" onclick="alert('This would navigate to the dashboard in the full prototype')">Go to dashboard →</button>
+    </div>
+  </div>`;
+}
+
+/* ── INTERACTION HELPERS ────────────────────────────────────── */
+function toggleChoice(btn){ btn.classList.toggle("sel"); }
+function toggleSingle(btn){
+  btn.parentElement.querySelectorAll(".toggle-opt").forEach(b=>b.classList.remove("sel"));
+  btn.classList.add("sel");
+}
+function removeChip(x){ x.parentElement.remove(); }
+function addChip(e, wrapId){
+  if(e.key === "Enter" && e.target.value.trim()){
+    const chip = document.createElement("span");
+    chip.className = "chip";
+    chip.innerHTML = e.target.value.trim() + ' <span class="chip-x" onclick="removeChip(this)">×</span>';
+    e.target.parentElement.insertBefore(chip, e.target);
+    e.target.value = "";
+    e.preventDefault();
+  }
+}
+function updateRange(input, outId){
+  document.getElementById(outId).textContent = input.value + "k €";
+  const pct = ((input.value - input.min) / (input.max - input.min)) * 100;
+  input.style.background = `linear-gradient(to right, #3B7EF6 0%, #3B7EF6 ${pct}%, #E4E4E8 ${pct}%)`;
+}
+
+/* ── INIT ──────────────────────────────────────────────────── */
+goScreen(0, document.querySelectorAll("#proto-bar .pb")[0]);
+</script>
+</body>
+</html>
