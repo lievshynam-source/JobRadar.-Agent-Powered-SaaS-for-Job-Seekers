@@ -9,6 +9,7 @@ It explores agent UX, explainability, and decision-support workflows for a job s
 [Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-dashboard.html)
 
 > Standalone HTML prototype. No backend, no API, no setup required.
+> 
 ---
 
 ## Human–AI Triad Collaboration
@@ -18,6 +19,7 @@ It explores agent UX, explainability, and decision-support workflows for a job s
 | **Maryna Lievshyna** | Founder, Product Design Lead, product vision, final decisions |
 | **ChatGPT** | PM, UX structure, case study support |
 | **Claude + Cursor** | UI execution, front-end engineering, interactive prototype |
+
 
 This project was built through an experimental Human–AI triad workflow: close enough to a real product team, but without Zoom calls, endless emails, and meetings that could have been a sentence.
 
@@ -40,9 +42,10 @@ For employed professionals, there is another layer: they may be open to new oppo
 And yes, tools like Apify, Claude workflows, scraping scripts, cloud setups, and notification systems - proper life savers, but require some basic tech skills. I want to give the same experience for non-technical users.
 
 ---
+
 ## Product Concept
 
-JobRadar is a simple private job tracking tool for people who want to simply apply for a job. 
+JobRadar is a simple, private job-tracking tool for people who want to apply for jobs. 
 
 Instead of searching the whole internet, users choose the companies they want to work in. The agent monitors those career pages, finds relevant roles, explains why they match, and helps users decide what to save, ignore, or apply to.
 
@@ -50,6 +53,7 @@ The idea is simple:
 
 > Pick your dream companies. Set your preferences. Let the agent watch the boring part.
 
+---
 
 ## Dashboard Preview
 
@@ -60,7 +64,6 @@ The dashboard is designed to answer three questions fast:
 - what happened
 - what matters now
 - what should I do next
-
 
 ---
 
@@ -85,6 +88,7 @@ JobRadar is for:
 5. Save, ignore, or apply faster
 
 **Free to use for job seekers.**
+
 
 ![JobRadar dashboard preview](./jobradar-onboarding-1.png)
 
@@ -120,33 +124,22 @@ Dashboard Flow: turns agent results into clear states and next actions
    - ## Dashboard flow
 
  ![JobRadar onboarding flow](./JobRadar-Dashboard-Flow.png)
-    
-2. **Interactive prototypes**
-   - Onboarding prototype
-   - Dashboard prototype
-   - Matches page
-   - Job Detail page
-   - Agent Activity page
 
-3. **Local agent simulation**
-   - Reads local JSON data
-   - Simulates company monitoring
-   - Scores jobs with deterministic logic
-   - Generates match explanations
-   - Updates dashboard states
-   - Simulates source issues
-   - Supports save / ignore actions
+---
 
 ## Prototype Layers
 
 JobRadar was developed in layers, from product logic to coded prototype.
 
+---
 
-### 2. Onboarding Prototype
+
+### 1. Onboarding Prototype
 
 [Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-onboarding.html)
 
 > Standalone HTML prototypes. No backend, no API, no setup required.
+
 
 The onboarding prototype explores how users configure the agent.
 
@@ -160,8 +153,9 @@ Instead of treating onboarding as a generic form, the setup flow is designed as 
 - alert preferences
 - review before first scan
 
+---
 
-### 3. Dashboard Prototype
+### 2. Dashboard Prototype
 
 [Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-dashboard.html)
 
@@ -187,16 +181,27 @@ The dashboard includes:
 
 ---
 
-### 4. Local Agent Simulator
+### 3. Local Agent Simulator
 
 [Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-agent.html)
 
 > Standalone HTML prototype. No backend, no API, no setup required.
 
-jobradar-agent.html
-data-companies.json
-data-jobs.json
-data-userPreferences.json
+Prototype files:
+
+- `jobradar-agent.html` — local agent simulator interface
+- `data-companies.json` — sample tracked company sources
+- `data-jobs.json` — sample job listings
+- `data-userPreferences.json` — sample user preferences used for matching
+
+
+   - Reads local JSON data
+   - Simulates company monitoring
+   - Scores jobs with deterministic logic
+   - Generates match explanations
+   - Updates dashboard states
+   - Simulates source issues
+   - Supports save / ignore actions
 
 The local agent simulator is not a real AI agent yet.
 
