@@ -40,8 +40,9 @@ For employed professionals, there is another layer: they may be open to new oppo
 And yes, tools like Apify, Claude workflows, scraping scripts, cloud setups, and notification systems - proper life savers, but require some basic tech skills. I want to give the same experience for non-technical users.
 
 ---
+## Product Concept
 
-JobRadar is a simple private job tracking tool for people who want to apply for a job. Simple.
+JobRadar is a simple private job tracking tool for people who want to simply apply for a job. 
 
 Instead of searching the whole internet, users choose the companies they want to work in. The agent monitors those career pages, finds relevant roles, explains why they match, and helps users decide what to save, ignore, or apply to.
 
