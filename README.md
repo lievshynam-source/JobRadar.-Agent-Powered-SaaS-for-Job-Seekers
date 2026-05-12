@@ -1,6 +1,140 @@
-# JobRadar - Agent-Powered SaaS for Job Seekers
+# JobRadar — Agent-Powered SaaS for Job Seekers
 
-JobRadar is an agent-powered SaaS prototype that monitors selected company career pages and surfaces relevant roles privately. It explores agent UX, explainability, and decision-support workflows for a calmer, faster job search.
+JobRadar is an agent-powered SaaS prototype that monitors selected company career pages and surfaces relevant roles privately.
+
+It explores agent UX, explainability, and decision-support workflows for a calmer, faster, and more private job-search experience.
+
+---
+
+## Product Concept
+
+JobRadar is a private, company-first job-tracking tool for people targeting specific employers.
+
+Instead of searching the whole internet, users choose the companies they want to work for. The agent monitors those career pages, finds relevant roles, explains why they match, and helps users decide what to save, ignore, or apply to.
+
+> Pick your dream companies. Set your preferences. Let the agent watch the boring part.
+
+---
+
+## Problem
+
+Job searching is noisy, repetitive, and emotionally exhausting.
+
+Users are often buried under irrelevant listings, excessive alerts, recruiter spam, and public job-search signals that can feel risky or exposing.
+
+For employed professionals, privacy matters just as much as speed. They may be open to better opportunities, but do not want to rely on public “Open to Work” visibility.
+
+Meanwhile, technical automation tools can help, but usually require setup skills that many users do not have.
+
+JobRadar explores a simpler alternative: a private, company-first job-tracking workflow for non-technical users.
+
+---
+
+## Who It Is For
+
+JobRadar is for:
+
+- active job seekers tired of LinkedIn noise
+- people who want to apply early to selected companies
+- employed professionals who want privacy while exploring opportunities
+- users who want a calmer, more focused job-search workflow
+
+---
+
+## Core User Flow
+
+1. Pick your target companies  
+2. Set your preferences  
+3. Let the agent monitor them  
+4. Review only relevant roles  
+5. Save, ignore, or apply faster  
+
+---
+
+## Dashboard Preview
+
+![JobRadar dashboard preview](./jobradar-dashboard%20Strong%20maches.png)
+
+The dashboard is designed to answer three questions quickly:
+
+- what happened
+- what matters now
+- what should I do next
+
+---
+
+## Interactive Prototypes
+
+All current prototypes are standalone HTML files with no backend, API, or setup required.
+
+### Pre-onboarding
+[Launch pre-onboarding prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-pre-onboarding.html)
+
+### Onboarding
+[Launch onboarding prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-onboarding.html)
+
+### Dashboard
+[Launch dashboard prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-dashboard.html)
+
+### Local Agent Simulator
+[Launch local agent simulator](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-agent.html)
+
+---
+
+## Product Flows
+
+The first product layer focused on structure and behavior before visual polish.
+
+### Pre-onboarding
+Helps users understand the product promise before setup.
+
+![Pre-onboarding flow](./JobRadar-Pre-Onboarding-Flow.png)
+
+### Dashboard Flow
+Turns agent results into clear states and next actions.
+
+![Dashboard Flow](./JobRadar-Dashboard-Flow.png)
+
+More detailed flow documentation is available in [CASE_STUDY.md](./CASE_STUDY.md).
+
+---
+
+## Prototype Layers
+
+JobRadar was developed in layers, from product logic to coded prototype.
+
+### 1. Onboarding Prototype
+Explores how users configure the agent:
+- target companies
+- preferred roles
+- location
+- seniority
+- keywords
+- alert preferences
+- review before first scan
+
+### 2. Dashboard Prototype
+Explores the core SaaS experience after setup:
+- AI summary
+- top matches
+- saved jobs / pipeline
+- tracked companies
+- agent activity
+- source status
+- dashboard states
+
+### 3. Local Agent Simulator
+A lightweight front-end simulation that makes the product logic testable before building a real backend.
+
+It currently simulates:
+- company source checks
+- deterministic job scoring
+- match explanations
+- filtered jobs
+- source errors
+- activity logs
+- dashboard state updates
+- save / ignore feedback
 
 ---
 
@@ -12,237 +146,58 @@ JobRadar is an agent-powered SaaS prototype that monitors selected company caree
 | **ChatGPT** | Product logic support, UX structure, case study framing |
 | **Claude + Cursor** | UI iteration, front-end prototyping, interactive prototype support |
 
+This project was built through a Human–AI triad workflow simulating early product collaboration across product logic, UX structure, UI iteration, and code-backed prototyping.
 
-This project was built through a Human–AI triad workflow designed to simulate early product collaboration across product logic, UX structure, UI iteration, and code-backed prototyping.
-
-The setup included brainstorming, challenging assumptions, resolving disagreements, separating responsibilities, and calibrating each AI tool until it passed the team-fit test. Each “team member” had a role, a voice, and a clear layer of responsibility.
-
-I led the vision, made the final calls, and used AI tools as product, design, and engineering support.
+I led the vision, made the final decisions, and used AI tools as product, design, and engineering support.
 
 ---
-
-## Problem
-
-Job searching in 2026 is brutal.
-
-You open LinkedIn “just to check jobs,” and suddenly you are buried under irrelevant listings, endless alerts, recruiter spam, and success posts from people who apparently built a €50M AI startup before breakfast.
-
-Meanwhile, you are just trying to find a good role, apply early, and not emotionally crash after scrolling through hundreds of applications.
-
-For employed professionals, there is another layer: they may be open to new opportunities, but they do not want to risk public “Open to Work” visibility.
-
-And yes, tools like Apify, Claude workflows, scraping scripts, cloud setups, and notification systems - proper life savers, but require some basic tech skills. I want to give the same experience for non-technical users.
-
----
-
-## Product Concept
-
-JobRadar is a simple, private job-tracking tool for people who want to apply for jobs. 
-
-Instead of searching the whole internet, users choose the companies they want to work in. The agent monitors those career pages, finds relevant roles, explains why they match, and helps users decide what to save, ignore, or apply to.
-
-The idea is simple:
-
-> Pick your dream companies. Set your preferences. Let the agent watch the boring part.
-
----
-
-## Dashboard Preview
-
-![JobRadar dashboard preview](./jobradar-dashboard%20Strong%20maches.png)
-
-The dashboard is designed to answer three questions fast:
-
-- what happened
-- what matters now
-- what should I do next
-
----
-
-## Who It Is For
-
-JobRadar is for:
-
-- active job seekers tired of LinkedIn noise
-- people who want to apply early to companies they choose
-- employed professionals who are open to opportunities but want privacy
-- non-technical users who do not want to configure automation tools
-- AI tech people too, if they want the easy button
-
----
-
-## Simple Flow
-
-1. Pick your dream-job companies
-2. Set your preferences
-3. Let the agent monitor them
-4. Review only relevant roles
-5. Save, ignore, or apply faster
-
-## Open Prototype
-
-[Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-pre-onboarding.html)
-
-> Standalone HTML prototype. No backend, no API, no setup required.
-> 
----
-
-
-
-![JobRadar dashboard preview](./jobradar-pre-onboarding.png)
-
----
-
-## Product Flows
-
-The first layer defines how the product works before focusing on UI polish.
-
-Mapped flows include:
-
-Pre-onboarding: helps users understand the product promise before setup  
-
-- ## Pre-onboarding flow
-
-![JobRadar onboarding flow](./JobRadar-Pre-Onboarding-Flow.png)
-
-Onboarding: collects companies, preferences, alerts, and review confirmation
-   - ## Onboarding Flow
-
-![JobRadar onboarding flow](./JobRadar-Onboarding-Flow.png)
-
-Main App Flow: defines the core SaaS navigation and user actions
-   - ## Main app flow
-
-![JobRadar onboarding flow](./JobRadar-Main-App-Flow.png)
-
-Agent Activity / Trust Flow: shows what the agent checked, found, filtered, or failed to access
-   - ## Agent Activity / Trust flow
-
- ![JobRadar onboarding flow](./JobRadar-Agent-Activity-Trust-Flow.png)
-
-Dashboard Flow: turns agent results into clear states and next actions
-   - ## Dashboard flow
-
- ![JobRadar onboarding flow](./JobRadar-Dashboard-Flow.png)
-
----
-
-## Prototype Layers
-
-JobRadar was developed in layers, from product logic to coded prototype.
-
----
-
-
-### 1. Onboarding Prototype
-
-[Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-onboarding.html)
-
-> Standalone HTML prototypes. No backend, no API, no setup required.
-
-
-The onboarding prototype explores how users configure the agent.
-
-Instead of treating onboarding as a generic form, the setup flow is designed as a way for the user to teach the agent what to watch for:
-
-- target companies
-- preferred roles
-- locations
-- seniority
-- keywords
-- alert preferences
-- review before first scan
-
----
-
-### 2. Dashboard Prototype
-
-[Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-dashboard.html)
-
-> Standalone HTML prototype. No backend, no API, no setup required.
-
-The dashboard prototype shows the core SaaS experience after setup.
-
-It is designed to answer three questions quickly:
-
-1. What happened?
-2. What matters now?
-3. What should I do next?
-
-The dashboard includes:
-
-- AI summary
-- top matches
-- saved jobs / pipeline
-- tracked companies
-- agent activity
-- source status
-- dashboard states
-
----
-
-### 3. Local Agent Simulator
-
-[Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-agent.html)
-
-> Standalone HTML prototype. No backend, no API, no setup required.
-
-Prototype files:
-
-- `jobradar-agent.html` — local agent simulator interface
-- `data-companies.json` — sample tracked company sources
-- `data-jobs.json` — sample job listings
-- `data-userPreferences.json` — sample user preferences used for matching
-
-
-   - Reads local JSON data
-   - Simulates company monitoring
-   - Scores jobs with deterministic logic
-   - Generates match explanations
-   - Updates dashboard states
-   - Simulates source issues
-   - Supports save / ignore actions
-
-The local agent simulator is not yet a real AI agent.
-
-It is a lightweight front-end simulation that makes the product logic testable before building a real backend.
-
-It simulates:
-
-- company source checks
-- job scoring
-- match explanations
-- filtered jobs
-- source errors
-- activity logs
-- dashboard state updates
-- Save / ignore feedback
-
 
 ## What Is Real vs. Simulated
 
 ### Real
-
-- Product concept
+- product concept
 - UX flows
-- Information architecture
+- information architecture
 - SaaS dashboard structure
-- Onboarding logic
-- Trust and explainability patterns
-- Interactive HTML prototype
-- Local JSON data structure
-- Deterministic scoring logic
-- Dashboard states
-- Save / ignore interactions
+- onboarding logic
+- trust and explainability patterns
+- interactive HTML prototypes
+- local JSON data structure
+- deterministic scoring logic
+- dashboard states
+- save / ignore interactions
 
 ### Simulated
-
-- Real career-page scraping
-- Real AI / LLM reasoning
-- Backend infrastructure
-- User accounts
-- Persistent database
-- Live notifications
-- Live job availability
+- real career-page scraping
+- real AI / LLM reasoning
+- backend infrastructure
+- user accounts
+- persistent database
+- live notifications
+- live job availability
 
 This prototype is designed to prove the product experience, not production readiness.
+
+---
+
+## Repository Contents
+
+- `jobradar-pre-onboarding.html` — pre-onboarding prototype
+- `jobradar-onboarding.html` — onboarding prototype
+- `jobradar-dashboard.html` — dashboard prototype
+- `jobradar-agent.html` — local agent simulator
+- `data-companies.json` — sample company sources
+- `data-jobs.json` — sample job listings
+- `data-userPreferences.json` — sample user preferences
+- `CASE_STUDY.md` — extended product reasoning, flows, and prototype documentation
+
+---
+
+## Next Steps
+
+Planned next steps include:
+- stronger visual polish
+- deeper matches and job-detail refinement
+- more realistic company/source behavior
+- expanded agent logic
+- backend-backed MVP exploration
