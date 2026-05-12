@@ -12,16 +12,16 @@ It explores agent UX, explainability, and decision-support workflows for a job s
 > 
 ---
 
-## Human–AI Triad Collaboration
+## Human-led AI Workflow
 
 | Role | Contribution |
 |---|---|
-| **Maryna Lievshyna** | Founder, Product Design Lead, product vision, final decisions |
-| **ChatGPT** | PM, UX structure, case study support |
-| **Claude + Cursor** | UI execution, front-end engineering, interactive prototype |
+| **Maryna Lievshyna** | Product Design Lead, product vision, UX direction, final decisions |
+| **ChatGPT** | Product logic support, UX structure, case study framing |
+| **Claude + Cursor** | UI iteration, front-end prototyping, interactive prototype support |
 
 
-This project was built through an experimental Human–AI triad workflow: close enough to a real product team, but without Zoom calls, endless emails, and meetings that could have been a sentence.
+This project was built through a human-led AI workflow designed to simulate early product collaboration across product logic, UX structure, UI iteration, and code-backed prototyping.
 
 The setup included brainstorming, challenging assumptions, resolving disagreements, separating responsibilities, and calibrating each AI tool until it passed the team-fit test. Each “team member” had a role, a voice, and a clear layer of responsibility.
 
@@ -212,7 +212,7 @@ Prototype files:
    - Simulates source issues
    - Supports save / ignore actions
 
-The local agent simulator is not a real AI agent yet.
+The local agent simulator is not yet a real AI agent.
 
 It is a lightweight front-end simulation that makes the product logic testable before building a real backend.
 
