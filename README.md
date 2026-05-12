@@ -194,18 +194,15 @@ I led the vision, made the final decisions, and used AI tools as product, design
 
 This prototype is designed to prove the product experience, not production readiness.
 
----
-
 ## Repository Contents
 
 - `jobradar-pre-onboarding.html` — pre-onboarding prototype
-- `jobradar-onboarding-v2.html` — onboarding prototype
-- `jobradar-dashboard-v2.html` — dashboard prototype
-- `jobradar-agent/jobradar-agent.html` — local agent simulator
-- `jobradar-agent/data-companies.json` — sample company sources
-- `jobradar-agent/data-jobs.json` — sample job listings
-- `jobradar-agent/data-userPreferences.json` — sample user preferences
-- `CASE_STUDY.md` — extended product reasoning, flows, and prototype documentation
+- `jobradar-onboarding.html` — onboarding prototype
+- `jobradar-dashboard.html` — dashboard prototype
+- `jobradar-agent.html` — local agent simulator
+- `data-companies.json` — sample company sources
+- `data-jobs.json` — sample job listings
+- `data-userPreferences.json` — sample user preferences
 
 ## Next Steps
 
