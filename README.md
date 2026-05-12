@@ -6,7 +6,7 @@ It explores agent UX, explainability, and decision-support workflows for a job s
 
 ---
 
-## Human-led AI Workflow
+## Human–AI triad
 
 | Role | Contribution |
 |---|---|
@@ -15,7 +15,7 @@ It explores agent UX, explainability, and decision-support workflows for a job s
 | **Claude + Cursor** | UI iteration, front-end prototyping, interactive prototype support |
 
 
-This project was built through a human-led AI workflow designed to simulate early product collaboration across product logic, UX structure, UI iteration, and code-backed prototyping.
+This project was built through a Human–AI triad workflow designed to simulate early product collaboration across product logic, UX structure, UI iteration, and code-backed prototyping.
 
 The setup included brainstorming, challenging assumptions, resolving disagreements, separating responsibilities, and calibrating each AI tool until it passed the team-fit test. Each “team member” had a role, a voice, and a clear layer of responsibility.
 
