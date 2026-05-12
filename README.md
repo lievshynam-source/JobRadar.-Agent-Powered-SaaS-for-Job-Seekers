@@ -87,6 +87,15 @@ JobRadar is for:
 4. Review only relevant roles
 5. Save, ignore, or apply faster
 
+## Open Prototype
+
+[Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-pre-onboarding.html)
+
+> Standalone HTML prototype. No backend, no API, no setup required.
+> 
+---
+
+
 **Free to use for job seekers.**
 
 
