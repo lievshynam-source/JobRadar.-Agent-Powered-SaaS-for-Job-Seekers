@@ -8,9 +8,9 @@ It explores agent UX, explainability, and decision-support workflows for a calme
 
 ## Product Concept
 
-JobRadar is a private, company-first job-tracking tool for people targeting specific employers.
+JobRadar is a job-tracking tool for people targeting specific employers.
 
-Instead of searching the whole internet, users choose the companies they want to work for. The agent monitors those career pages, finds relevant roles, explains why they match, and helps users decide what to save, ignore, or apply to.
+Instead of searching the whole internet, users choose the companies they want to work for. The agent monitors those career pages, finds relevant roles, sends notifications, explains why they match, and helps users decide what to save, ignore, or apply to.
 
 > Pick your dream companies. Set your preferences. Let the agent watch the boring part.
 
