@@ -81,7 +81,7 @@ All current prototypes are standalone HTML files with no backend, API, or setup 
 
 ---
 
-## Product Flows
+## Core Product Flows
 
 The first product layer focused on structure and behavior before visual polish.
 
@@ -95,8 +95,7 @@ Turns agent results into clear states and next actions.
 
 ![Dashboard Flow](./JobRadar-Dashboard-Flow.png)
 
-More detailed flow documentation is available in [CASE_STUDY.md](./CASE_STUDY.md).
-
+Full flow documentation, including **Onboarding**, **Main App**, and **Agent Activity / Trust** flows, is available in [CASE_STUDY.md](./CASE_STUDY.md).
 ---
 
 ## Prototype Layers
@@ -195,9 +194,8 @@ This prototype is designed to prove the product experience, not production readi
 
 ## Next Steps
 
-Planned next steps include:
-- stronger visual polish
-- deeper matches and job-detail refinement
-- more realistic company/source behavior
-- expanded agent logic
-- backend-backed MVP exploration
+- refining the Matches and Job Detail experience
+- improving prototype visual consistency across states
+- expanding the local agent simulation with richer company behaviors
+- testing lightweight preference-learning from save / ignore actions
+- exploring a backend-backed MVP for monitored sources and persistent user data
