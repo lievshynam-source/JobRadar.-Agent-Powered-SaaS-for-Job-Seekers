@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JobRadar — Pre-Onboarding</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 13px; background: #F0F0F2; color: #111114; line-height: 1.5; min-height: 100vh; }
+
+#proto-bar { background: #0A0A0C; border-bottom: 1px solid #1A1A1E; padding: 7px 18px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; position: sticky; top: 0; z-index: 200; }
+#proto-bar.hidden { display: none; }
+.proto-label { font-size: 9px; color: #383838; text-transform: uppercase; letter-spacing: .09em; font-family: "SF Mono","Fira Mono",monospace; white-space: nowrap; }
+.pb { font-size: 11px; font-family: inherit; padding: 3px 11px; border: 1px solid #404041; border-radius: 20px; background: transparent; color: #B0B0B0; cursor: pointer; transition: all .12s; white-space: nowrap; }
+.pb:hover { border-color: #555; color: #d0d0d0; }
+.pb.active { background: #2B5CF6; border-color: #2B5CF6; color: #fff; }
+.hide-btn { margin-left: auto; font-size: 9px; font-family: "SF Mono","Fira Mono",monospace; padding: 3px 10px; border: 1px solid #2A2A2E; border-radius: 20px; background: transparent; color: #404044; cursor: pointer; }
+.hide-btn:hover { color: #888; }
+#restore-btn { display: none; position: fixed; top: 10px; right: 16px; z-index: 300; font-size: 10px; font-family: "SF Mono","Fira Mono",monospace; padding: 4px 12px; border: 1px solid #333; border-radius: 20px; background: #0A0A0C; color: #666; cursor: pointer; }
+
+/* ── CENTERED LAYOUT ────────────────────────────────────────── */
+.page { min-height: calc(100vh - 38px); display: flex; align-items: flex-start; justify-content: center; padding: 48px 24px 64px; background: #F4F4F6; }
+.container { width: 100%; max-width: 600px; }
+
+/* ── LOGO ────────────────────────────────────────────────────── */
+.logo { font-size: 18px; font-weight: 700; color: #111114; margin-bottom: 40px; letter-spacing: -.3px; }
+.logo span { color: #3B7EF6; }
+
+/* ── STEP INDICATOR ─────────────────────────────────────────── */
+.step-dots { display: flex; align-items: center; gap: 6px; margin-bottom: 36px; }
+.sdot { width: 7px; height: 7px; border-radius: 50%; background: #E0E0E4; transition: all .2s; }
+.sdot.done { background: #3B7EF6; opacity: .45; }
+.sdot.active { width: 20px; border-radius: 4px; background: #3B7EF6; }
+
+/* ── SCREENS ─────────────────────────────────────────────────── */
+.screen { display: flex; flex-direction: column; gap: 24px; }
+.eyebrow { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #3B7EF6; margin-bottom: 8px; }
+.screen-title { font-size: 26px; font-weight: 700; color: #111114; line-height: 1.2; margin-bottom: 10px; }
+.screen-desc  { font-size: 13px; color: #5A5A68; line-height: 1.7; max-width: 480px; }
+
+/* ── CARDS ────────────────────────────────────────────────────── */
+.card { background: #fff; border: 1px solid #E4E4E7; border-radius: 12px; }
+.card-inner { padding: 18px 20px; }
+.card-inner + .card-inner { border-top: 1px solid #F0F0F2; }
+
+/* ── HOW IT WORKS STEPS ─────────────────────────────────────── */
+.how-row { display: flex; align-items: flex-start; gap: 14px; padding: 12px 0; }
+.how-row + .how-row { border-top: 1px solid #F8F8FA; }
+.how-num { width: 28px; height: 28px; border-radius: 50%; background: #EEF4FF; border: 1.5px solid #C5D8FF; color: #1E40AF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: "SF Mono","Fira Mono",monospace; }
+.how-text { flex: 1; }
+.how-title { font-size: 12px; font-weight: 600; color: #111114; margin-bottom: 3px; }
+.how-sub   { font-size: 11px; color: #5A5A68; line-height: 1.5; }
+
+/* ── DECISION ─────────────────────────────────────────────────── */
+.decision-card { background: #fff; border: 1px solid #E4E4E7; border-radius: 12px; padding: 24px 20px; text-align: center; }
+.decision-q { font-size: 16px; font-weight: 700; color: #111114; margin-bottom: 6px; }
+.decision-sub { font-size: 12px; color: #6B6B7A; margin-bottom: 24px; }
+.decision-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.choice-card {
+  border: 1.5px solid #E0E0E8; border-radius: 10px; padding: 16px 14px;
+  cursor: pointer; transition: all .15s; text-align: left; background: #fff;
+  font-family: inherit;
+}
+.choice-card:hover { border-color: #3B7EF6; background: #F7FAFF; }
+.choice-card.sel { border-color: #3B7EF6; background: #EEF4FF; }
+.choice-label { font-size: 12px; font-weight: 600; color: #111114; margin-bottom: 4px; display: block; }
+.choice-desc  { font-size: 11px; color: #6B6B7A; line-height: 1.4; }
+
+/* ── PATH A & B FORMS ─────────────────────────────────────────── */
+.path-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 14px; }
+.path-a .path-label { color: #166534; }
+.path-b .path-label { color: #5B21B6; }
+
+/* source rows */
+.src-row { background: #F8F8FA; border: 1px solid #E8E8EC; border-radius: 9px; padding: 13px 14px; margin-bottom: 8px; }
+.src-row:last-of-type { margin-bottom: 0; }
+.src-row-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.src-row-num { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #9A9AA8; }
+.src-remove  { font-size: 10px; color: #C0C0C8; cursor: pointer; background: none; border: none; font-family: inherit; }
+.src-remove:hover { color: #E05050; }
+.src-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.field-label { font-size: 10px; font-weight: 600; color: #3A3A48; margin-bottom: 4px; display: block; }
+.field-input { width: 100%; padding: 7px 10px; border: 1px solid #E0E0E8; border-radius: 6px; font-size: 11px; font-family: inherit; color: #111114; background: #fff; outline: none; transition: border-color .12s; }
+.field-input:focus { border-color: #3B7EF6; box-shadow: 0 0 0 3px rgba(59,126,246,.07); }
+.field-input::placeholder { color: #C0C0C8; }
+.field-select { width: 100%; padding: 7px 28px 7px 10px; border: 1px solid #E0E0E8; border-radius: 6px; font-size: 11px; font-family: inherit; color: #111114; background: #fff; outline: none; cursor: pointer; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239A9AA8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; }
+.field-select:focus { border-color: #3B7EF6; }
+.detected-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 600; padding: 2px 7px; border-radius: 4px; background: #F0FBF0; border: 1px solid #BBF7D0; color: #166534; margin-top: 4px; }
+.add-src-btn { display: flex; align-items: center; gap: 7px; padding: 10px 14px; border: 1.5px dashed #C5D8FF; border-radius: 9px; background: transparent; color: #3B7EF6; font-size: 12px; font-family: inherit; font-weight: 500; cursor: pointer; width: 100%; margin-top: 8px; transition: all .12s; }
+.add-src-btn:hover { background: #F4F8FF; border-color: #3B7EF6; }
+
+/* criteria chips */
+.chip-group { display: flex; flex-wrap: wrap; gap: 7px; }
+.chip-btn { font-size: 11px; font-family: inherit; padding: 6px 14px; border: 1px solid #E0E0E8; border-radius: 20px; background: #fff; color: #5A5A68; cursor: pointer; transition: all .12s; font-weight: 500; }
+.chip-btn:hover { border-color: #93C5FD; color: #1E40AF; background: #F4F8FF; }
+.chip-btn.on { background: #EEF4FF; border-color: #3B7EF6; color: #1E40AF; }
+
+/* suggested companies */
+.suggested-co { display: flex; align-items: center; gap: 10px; padding: 10px 0; cursor: pointer; transition: background .1s; }
+.suggested-co + .suggested-co { border-top: 1px solid #F4F4F6; }
+.sco-check { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid #E0E0E8; background: #fff; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .12s; }
+.sco-check.checked { background: #3B7EF6; border-color: #3B7EF6; }
+.sco-check.checked svg { display: block; }
+.sco-check svg { display: none; width: 10px; height: 10px; stroke: #fff; stroke-width: 3; fill: none; }
+.sco-info { flex: 1; }
+.sco-name { font-size: 12px; font-weight: 600; color: #111114; }
+.sco-why  { font-size: 10px; color: #6B6B7A; margin-top: 1px; }
+.sco-badge { font-size: 9px; padding: 2px 8px; border-radius: 4px; background: #F4F4F6; color: #5A5A68; font-family: "SF Mono","Fira Mono",monospace; flex-shrink: 0; }
+
+/* MERGE screen */
+.merge-icon { width: 56px; height: 56px; border-radius: 50%; background: #EEF4FF; border: 2px solid #C5D8FF; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
+.merge-icon svg { width: 24px; height: 24px; stroke: #3B7EF6; stroke-width: 2; fill: none; }
+.merge-companies { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin: 14px 0; }
+.merge-chip { font-size: 11px; font-weight: 500; padding: 4px 10px; background: #EEF4FF; border: 1px solid #C5D8FF; color: #1E40AF; border-radius: 20px; }
+
+/* trust note */
+.trust-note { display: flex; align-items: flex-start; gap: 8px; background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 8px; padding: 9px 12px; font-size: 11px; color: #78350F; line-height: 1.5; }
+.trust-note-blue { display: flex; align-items: flex-start; gap: 8px; background: #EEF4FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 9px 12px; font-size: 11px; color: #1E3A8A; line-height: 1.5; }
+.tn-icon { flex-shrink: 0; margin-top: 1px; font-size: 13px; }
+
+/* nav */
+.bottom-nav { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; }
+.btn-back { font-size: 12px; font-family: inherit; padding: 10px 20px; border: 1px solid #E0E0E8; border-radius: 8px; background: #fff; color: #5A5A68; cursor: pointer; font-weight: 500; }
+.btn-back:hover { background: #F4F4F6; }
+.btn-next { font-size: 12px; font-family: inherit; padding: 10px 28px; border: 1px solid #3B7EF6; border-radius: 8px; background: #3B7EF6; color: #fff; cursor: pointer; font-weight: 600; transition: all .12s; }
+.btn-next:hover { background: #2563EB; }
+.btn-cta  { font-size: 13px; font-family: inherit; padding: 12px 36px; border: none; border-radius: 9px; background: #3B7EF6; color: #fff; cursor: pointer; font-weight: 700; }
+.btn-cta:hover { background: #2563EB; }
+</style>
+</head>
+<body>
+
+<div id="proto-bar">
+  <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+    <span class="proto-label">Screen</span>
+    <button class="pb active" onclick="go(0,this)">1 · Landing</button>
+    <button class="pb" onclick="go(1,this)">2 · How It Works</button>
+    <button class="pb" onclick="go(2,this)">3 · Decision</button>
+    <button class="pb" onclick="go(3,this)">4A · Add URLs</button>
+    <button class="pb" onclick="go(4,this)">4B · Get Suggestions</button>
+    <button class="pb" onclick="go(5,this)">5 · Confirm Sources</button>
+    <button class="pb" onclick="go(6,this)">6 · Agent Ready</button>
+  </div>
+  <button class="hide-btn" onclick="document.getElementById('proto-bar').classList.add('hidden');document.getElementById('restore-btn').style.display='block'">Hide toolbar ↑</button>
+</div>
+<button id="restore-btn" onclick="document.getElementById('proto-bar').classList.remove('hidden');this.style.display='none'">Show toolbar ↓</button>
+
+<div class="page"><div class="container" id="container"></div></div>
+
+<script>
+let cur = 0;
+let path = null; // 'A' or 'B'
+let selectedSuggested = new Set([0,1,2]);
+
+let pathASources = [
+  { name:"Mistral AI",   url:"https://boards.greenhouse.io/mistral",   type:"Greenhouse" },
+  { name:"Hugging Face", url:"https://apply.workable.com/huggingface", type:"Workable"   },
+  { name:"Alan",         url:"https://jobs.lever.co/alan",             type:"Lever"      },
+];
+
+const SUGGESTED = [
+  { name:"Photoroom",    why:"AI-powered creative tools · Paris",    type:"Greenhouse", checked:true  },
+  { name:"Figures",      why:"B2B SaaS · compensation platform · Paris", type:"Ashby", checked:true  },
+  { name:"Yousign",      why:"B2B SaaS · e-signature · Paris · fast-growing", type:"Ashby", checked:true  },
+  { name:"Nabla",        why:"Healthcare AI · Paris · senior UX roles", type:"Greenhouse", checked:false },
+  { name:"Doctrine",     why:"LegalTech AI · Paris",                 type:"Custom",     checked:false },
+  { name:"Poolside",     why:"AI coding assistant · growing fast",    type:"Lever",      checked:false },
+];
+
+function go(i, btn){
+  cur = i;
+  if(btn){ document.querySelectorAll("#proto-bar .pb").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); }
+  render();
+}
+
+function dots(total, active){
+  return Array.from({length:total},(_,i)=>`<div class="sdot ${i<active?'done':i===active?'active':''}"></div>`).join("");
+}
+
+function detectATS(url){
+  if(!url) return "";
+  if(url.includes("greenhouse.io")) return "Greenhouse";
+  if(url.includes("lever.co")) return "Lever";
+  if(url.includes("ashbyhq.com")) return "Ashby";
+  if(url.includes("workable.com")) return "Workable";
+  return "";
+}
+
+/* ── RENDER ROUTER ──────────────────────────────────────────── */
+function render(){
+  const el = document.getElementById("container");
+  const screens = [s1,s2,s3,s4a,s4b,s5,s6];
+  el.innerHTML = `<div class="logo">Job<span>Radar</span></div>` + screens[cur]();
+}
+
+/* ── S1 LANDING ─────────────────────────────────────────────── */
+function s1(){
+  return `<div class="screen">
+    <div class="step-dots">${dots(5,0)}</div>
+    <div>
+      <div class="eyebrow">Welcome to JobRadar</div>
+      <div class="screen-title">Job search without the noise</div>
+      <div class="screen-desc">JobRadar monitors selected company career pages on your behalf — not the whole internet. You choose where it looks. It does the checking.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-inner">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <div style="width:32px;height:32px;background:#EEF4FF;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px">🎯</div>
+            <div><div style="font-size:12px;font-weight:600;color:#111114;margin-bottom:3px">Selected sources, not search engines</div><div style="font-size:11px;color:#5A5A68;line-height:1.5">You pick the companies. Your agent monitors only those career pages.</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <div style="width:32px;height:32px;background:#F0FBF0;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px">🤖</div>
+            <div><div style="font-size:12px;font-weight:600;color:#111114;margin-bottom:3px">Agent does the checking for you</div><div style="font-size:11px;color:#5A5A68;line-height:1.5">No more manual refreshing. Your agent runs daily and surfaces what's relevant.</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <div style="width:32px;height:32px;background:#FFFBEB;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px">✨</div>
+            <div><div style="font-size:12px;font-weight:600;color:#111114;margin-bottom:3px">Less noise, more signal</div><div style="font-size:11px;color:#5A5A68;line-height:1.5">Every match comes with an explanation. You decide what to review, save, or ignore.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="trust-note-blue">
+      <span class="tn-icon">ℹ</span>
+      <span>JobRadar never searches the open web without your permission. You are always in control of which sources your agent monitors.</span>
+    </div>
+
+    <div class="bottom-nav">
+      <span></span>
+      <button class="btn-next" onclick="go(1,document.querySelectorAll('#proto-bar .pb')[1])">See how it works →</button>
+    </div>
+  </div>`;
+}
+
+/* ── S2 HOW IT WORKS ────────────────────────────────────────── */
+function s2(){
+  return `<div class="screen">
+    <div class="step-dots">${dots(5,1)}</div>
+    <div>
+      <div class="eyebrow">How it works</div>
+      <div class="screen-title">Three steps, then your agent runs itself</div>
+      <div class="screen-desc">Setup takes a few minutes. After that, your agent works in the background and notifies you when something relevant appears.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-inner">
+        <div class="how-row">
+          <div class="how-num">1</div>
+          <div class="how-text">
+            <div class="how-title">Choose companies to track</div>
+            <div class="how-sub">Add the companies you want your agent to monitor. You can add them by name, URL, or let JobRadar suggest them based on your criteria.</div>
+          </div>
+        </div>
+        <div class="how-row">
+          <div class="how-num">2</div>
+          <div class="how-text">
+            <div class="how-title">Agent monitors their career pages</div>
+            <div class="how-sub">Your agent checks each source daily — Greenhouse, Lever, Ashby, Workable, or custom pages. No scraping visible to you, no technical setup required.</div>
+          </div>
+        </div>
+        <div class="how-row">
+          <div class="how-num">3</div>
+          <div class="how-text">
+            <div class="how-title">You review only relevant matches</div>
+            <div class="how-sub">Every surfaced role includes a match score and a plain-language explanation. You save, ignore, or mark as applied — the agent learns from your choices.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="btn-back" onclick="go(0,document.querySelectorAll('#proto-bar .pb')[0])">← Back</button>
+      <button class="btn-next" onclick="go(2,document.querySelectorAll('#proto-bar .pb')[2])">Get started →</button>
+    </div>
+  </div>`;
+}
+
+/* ── S3 DECISION ────────────────────────────────────────────── */
+function s3(){
+  return `<div class="screen">
+    <div class="step-dots">${dots(5,2)}</div>
+    <div>
+      <div class="eyebrow">Set up your sources</div>
+      <div class="screen-title">Do you already have companies in mind?</div>
+      <div class="screen-desc">Choose how you want to build your monitoring list. You can always change it later.</div>
+    </div>
+
+    <div class="decision-btns" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <button class="choice-card ${path==='A'?'sel':''}" onclick="path='A';render();setTimeout(()=>go(3,document.querySelectorAll('#proto-bar .pb')[3]),120)">
+        <span class="choice-label">Yes — I know my companies</span>
+        <span class="choice-desc">I'll add company names or career page URLs directly. Quick setup.</span>
+      </button>
+      <button class="choice-card ${path==='B'?'sel':''}" onclick="path='B';render();setTimeout(()=>go(4,document.querySelectorAll('#proto-bar .pb')[4]),120)">
+        <span class="choice-label">Help me find companies</span>
+        <span class="choice-desc">I'll set my criteria and let JobRadar suggest relevant companies to track.</span>
+      </button>
+    </div>
+
+    <div class="trust-note">
+      <span class="tn-icon">ℹ</span>
+      <span>You can mix both approaches — start with companies you know and add suggestions later from your dashboard.</span>
+    </div>
+  </div>`;
+}
+
+/* ── S4A PATH A — ADD URLS ──────────────────────────────────── */
+function s4a(){
+  path = 'A';
+  const rows = pathASources.map((s,i) => `
+    <div class="src-row">
+      <div class="src-row-hd">
+        <span class="src-row-num">Source ${i+1}</span>
+        ${i>0?`<button class="src-remove" onclick="pathASources.splice(${i},1);render()">Remove ×</button>`:'<span></span>'}
+      </div>
+      <div class="src-grid">
+        <div>
+          <label class="field-label">Company name</label>
+          <input class="field-input" value="${s.name}" placeholder="e.g. Mistral AI" oninput="pathASources[${i}].name=this.value">
+        </div>
+        <div>
+          <label class="field-label">Career page URL</label>
+          <input class="field-input" value="${s.url}" placeholder="https://boards.greenhouse.io/… or https://jobs.lever.co/…" style="font-size:10px;font-family:'SF Mono','Fira Mono',monospace" oninput="pathASources[${i}].url=this.value;this.nextElementSibling.textContent=detectATS(this.value)?'✓ '+detectATS(this.value)+' detected — agent will connect automatically':'';this.nextElementSibling.style.display=detectATS(this.value)?'inline-flex':'none'">
+          <span class="detected-badge" style="display:${s.type&&s.type!=='Auto-detect'?'inline-flex':'none'}">✓ ${s.type} detected — agent will connect automatically</span>
+        </div>
+      </div>
+    </div>`).join("");
+
+  return `<div class="screen path-a">
+    <div class="step-dots">${dots(5,3)}</div>
+    <div>
+      <div class="path-label">Path A · I know my companies</div>
+      <div class="screen-title">Add your companies</div>
+      <div class="screen-desc">Add the companies you want your agent to monitor. Paste the career page URL — JobRadar handles the rest.</div>
+    </div>
+
+    <div class="trust-note-blue">
+      <span class="tn-icon">ℹ</span>
+      <span>Paste a career page or ATS link. JobRadar works with Greenhouse, Lever, Ashby, Workable, or any custom career page. Your agent only monitors what you add here.</span>
+    </div>
+
+    <div>${rows}</div>
+
+    <button class="add-src-btn" onclick="pathASources.push({name:'',url:'',type:'Auto-detect',priority:'Medium'});render()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add another company
+    </button>
+
+    <div class="bottom-nav">
+      <button class="btn-back" onclick="go(2,document.querySelectorAll('#proto-bar .pb')[2])">← Back</button>
+      <button class="btn-next" onclick="go(5,document.querySelectorAll('#proto-bar .pb')[5])">Review sources →</button>
+    </div>
+  </div>`;
+}
+
+/* ── S4B PATH B — GET SUGGESTIONS ───────────────────────────── */
+function s4b(){
+  path = 'B';
+  const checked = SUGGESTED.filter((_,i)=>selectedSuggested.has(i));
+  return `<div class="screen path-b">
+    <div class="step-dots">${dots(5,3)}</div>
+    <div>
+      <div class="path-label" style="color:#5B21B6">Path B · Help me find companies</div>
+      <div class="screen-title">Set your criteria</div>
+      <div class="screen-desc">Tell your agent what you're looking for. It will suggest companies whose career pages are worth monitoring.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-inner">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9A9AA8;margin-bottom:10px">Role type</div>
+        <div class="chip-group">
+          <button class="chip-btn on" onclick="this.classList.toggle('on')">UX Lead</button>
+          <button class="chip-btn on" onclick="this.classList.toggle('on')">Product Designer</button>
+          <button class="chip-btn" onclick="this.classList.toggle('on')">UX Researcher</button>
+          <button class="chip-btn" onclick="this.classList.toggle('on')">Design Manager</button>
+        </div>
+      </div>
+      <div class="card-inner">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9A9AA8;margin-bottom:10px">Location</div>
+        <div class="chip-group">
+          <button class="chip-btn on" onclick="this.classList.toggle('on')">Paris</button>
+          <button class="chip-btn on" onclick="this.classList.toggle('on')">Remote — Europe</button>
+          <button class="chip-btn" onclick="this.classList.toggle('on')">London</button>
+          <button class="chip-btn" onclick="this.classList.toggle('on')">Berlin</button>
+        </div>
+      </div>
+      <div class="card-inner">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9A9AA8;margin-bottom:10px">Industry / domain</div>
+        <div class="chip-group">
+          <button class="chip-btn on" onclick="this.classList.toggle('on')">AI products</button>
+          <button class="chip-btn on" onclick="this.classList.toggle('on')">B2B SaaS</button>
+          <button class="chip-btn" onclick="this.classList.toggle('on')">HealthTech</button>
+          <button class="chip-btn" onclick="this.classList.toggle('on')">FinTech</button>
+          <button class="chip-btn" onclick="this.classList.toggle('on')">LegalTech</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-inner">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9A9AA8;margin-bottom:4px">Suggested companies</div>
+        <div style="font-size:11px;color:#5A5A68;margin-bottom:12px">Based on your criteria — select which ones to track</div>
+        ${SUGGESTED.map((co,i)=>`
+        <div class="suggested-co" onclick="selectedSuggested.has(${i})?selectedSuggested.delete(${i}):selectedSuggested.add(${i});render()">
+          <div class="sco-check ${selectedSuggested.has(i)?'checked':''}">
+            <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+          </div>
+          <div class="sco-info">
+            <div class="sco-name">${co.name}</div>
+            <div class="sco-why">${co.why}</div>
+          </div>
+          <span class="sco-badge">${co.type}</span>
+        </div>`).join("")}
+      </div>
+    </div>
+
+    <div style="font-size:11px;color:#9A9AA8;text-align:center">${selectedSuggested.size} ${selectedSuggested.size===1?'company':'companies'} selected</div>
+
+    <div class="bottom-nav">
+      <button class="btn-back" onclick="go(2,document.querySelectorAll('#proto-bar .pb')[2])">← Back</button>
+      <button class="btn-next" onclick="go(5,document.querySelectorAll('#proto-bar .pb')[5])">Confirm selection →</button>
+    </div>
+  </div>`;
+}
+
+/* ── S5 CONFIRM SOURCES (MERGE) ─────────────────────────────── */
+function s5(){
+  const sources = path==='B'
+    ? SUGGESTED.filter((_,i)=>selectedSuggested.has(i)).map(s=>({name:s.name,type:s.type}))
+    : pathASources;
+
+  return `<div class="screen">
+    <div class="step-dots">${dots(5,4)}</div>
+    <div>
+      <div class="eyebrow">Confirm your sources</div>
+      <div class="screen-title">Your agent will monitor these companies</div>
+      <div class="screen-desc">Review the list before your agent starts. You can add, remove, or edit sources from your dashboard at any time.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-inner">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9A9AA8;margin-bottom:12px">Selected sources · ${sources.length}</div>
+        ${sources.map((s,i)=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;${i>0?'border-top:1px solid #F4F4F6':''}">
+          <div style="width:8px;height:8px;border-radius:50%;background:#3B7EF6;flex-shrink:0"></div>
+          <div style="flex:1;font-size:12px;font-weight:600;color:#111114">${s.name}</div>
+          <span style="font-size:9px;padding:2px 8px;background:#F2F2F5;color:#484856;border-radius:4px;font-family:'SF Mono','Fira Mono',monospace">${s.type||'Auto-detect'}</span>
+          <button onclick="event.stopPropagation()" style="font-size:10px;color:#C0C0C8;background:none;border:none;cursor:pointer" onmouseover="this.style.color='#E05050'" onmouseout="this.style.color='#C0C0C8'">×</button>
+        </div>`).join("")}
+      </div>
+    </div>
+
+    <div class="trust-note-blue">
+      <span class="tn-icon">ℹ</span>
+      <span>Your agent will only monitor these ${sources.length} career pages. You can always add more or remove any source from your dashboard settings.</span>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="btn-back" onclick="go(path==='B'?4:3,document.querySelectorAll('#proto-bar .pb')[path==='B'?4:3])">← Edit sources</button>
+      <button class="btn-next" onclick="go(6,document.querySelectorAll('#proto-bar .pb')[6])">Continue to setup →</button>
+    </div>
+  </div>`;
+}
+
+/* ── S6 AGENT READY ─────────────────────────────────────────── */
+function s6(){
+  const sources = path==='B'
+    ? SUGGESTED.filter((_,i)=>selectedSuggested.has(i))
+    : pathASources;
+
+  return `<div class="screen" style="text-align:center;align-items:center">
+    <div class="merge-icon">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07M8.46 8.46a5 5 0 0 0 0 7.07"/></svg>
+    </div>
+    <div style="font-size:22px;font-weight:700;color:#111114;line-height:1.2;margin-bottom:8px">Your agent is ready to monitor ${sources.length} ${sources.length===1?'company':'companies'}</div>
+    <div style="font-size:13px;color:#5A5A68;line-height:1.7;max-width:420px;margin-bottom:20px">Sources confirmed. Next, you'll set up your job preferences so the agent knows what roles to surface.</div>
+    <div class="merge-companies">
+      ${sources.map(s=>`<span class="merge-chip">${s.name}</span>`).join("")}
+    </div>
+    <div style="background:#F7FAFF;border:1px solid #BFDBFE;border-radius:10px;padding:14px 18px;text-align:left;max-width:440px;margin:4px auto">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#3B7EF6;margin-bottom:8px">What happens next</div>
+      <div style="font-size:11px;color:#3A3A68;line-height:1.8">
+        <div>→ Set your job preferences (2 min)</div>
+        <div>→ Agent is activated and starts monitoring</div>
+        <div>→ First results usually appear within 24h</div>
+        <div>→ You get notified when a match is found</div>
+      </div>
+    </div>
+    <div style="padding-top:20px">
+      <button class="btn-cta" onclick="alert('Continues to onboarding — jobradar-onboarding-v2.html')">Continue to job preferences →</button>
+    </div>
+  </div>`;
+}
+
+render();
+</script>
+</body>
+</html>
