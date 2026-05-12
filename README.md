@@ -90,7 +90,7 @@ JobRadar is for:
 **Free to use for job seekers.**
 
 
-![JobRadar dashboard preview](./jobradar-onboarding-1.png)
+![JobRadar dashboard preview](./jobradar-pre-onboarding.png)
 
 ---
 
