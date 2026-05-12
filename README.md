@@ -26,7 +26,7 @@ For employed professionals, privacy matters just as much as speed. They may be o
 
 Meanwhile, technical automation tools can help, but usually require setup skills that many users do not have.
 
-JobRadar explores a simpler alternative: a private, company-first job-tracking workflow for non-technical users.
+JobRadar explores a simpler alternative: a company-first job-tracking workflow for users who want a calmer and more focused search process.
 
 ---
 
@@ -71,13 +71,13 @@ All current prototypes are standalone HTML files with no backend, API, or setup 
 [Launch pre-onboarding prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-pre-onboarding.html)
 
 ### Onboarding
-[Launch onboarding prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-onboarding.html)
+[Launch onboarding prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-onboarding-v2.html)
 
 ### Dashboard
-[Launch dashboard prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-dashboard.html)
+[Launch dashboard prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-dashboard-v2.html)
 
 ### Local Agent Simulator
-[Launch local agent simulator](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-agent.html)
+[Launch local agent simulator](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-agent/jobradar-agent.html)
 
 ---
 
@@ -118,6 +118,7 @@ JobRadar was developed in layers, from product logic to coded prototype.
 
 ### 1. Onboarding Prototype
 Explores how users configure the agent:
+
 - target companies
 - preferred roles
 - location
@@ -128,6 +129,7 @@ Explores how users configure the agent:
 
 ### 2. Dashboard Prototype
 Explores the core SaaS experience after setup:
+
 - AI summary
 - top matches
 - saved jobs / pipeline
@@ -140,6 +142,7 @@ Explores the core SaaS experience after setup:
 A lightweight front-end simulation that makes the product logic testable before building a real backend.
 
 It currently simulates:
+
 - company source checks
 - deterministic job scoring
 - match explanations
@@ -196,15 +199,13 @@ This prototype is designed to prove the product experience, not production readi
 ## Repository Contents
 
 - `jobradar-pre-onboarding.html` — pre-onboarding prototype
-- `jobradar-onboarding.html` — onboarding prototype
-- `jobradar-dashboard.html` — dashboard prototype
-- `jobradar-agent.html` — local agent simulator
-- `data-companies.json` — sample company sources
-- `data-jobs.json` — sample job listings
-- `data-userPreferences.json` — sample user preferences
+- `jobradar-onboarding-v2.html` — onboarding prototype
+- `jobradar-dashboard-v2.html` — dashboard prototype
+- `jobradar-agent/jobradar-agent.html` — local agent simulator
+- `jobradar-agent/data-companies.json` — sample company sources
+- `jobradar-agent/data-jobs.json` — sample job listings
+- `jobradar-agent/data-userPreferences.json` — sample user preferences
 - `CASE_STUDY.md` — extended product reasoning, flows, and prototype documentation
-
----
 
 ## Next Steps
 
