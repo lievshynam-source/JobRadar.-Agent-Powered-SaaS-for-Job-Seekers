@@ -4,12 +4,6 @@ JobRadar is an agent-powered SaaS prototype that monitors selected company caree
 
 It explores agent UX, explainability, and decision-support workflows for a job search experience that helps users avoid noise, save time, protect privacy, and apply earlier.
 
-## Open Prototype
-
-[Launch Interactive Dashboard Prototype](https://lievshynam-source.github.io/JobRadar.-Agent-Powered-SaaS-for-Job-Seekers/jobradar-dashboard.html)
-
-> Standalone HTML prototype. No backend, no API, no setup required.
-> 
 ---
 
 ## Human-led AI Workflow
@@ -95,8 +89,6 @@ JobRadar is for:
 > 
 ---
 
-
-**Free to use for job seekers.**
 
 
 ![JobRadar dashboard preview](./jobradar-pre-onboarding.png)
