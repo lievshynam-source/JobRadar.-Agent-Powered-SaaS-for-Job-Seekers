@@ -81,21 +81,35 @@ All current prototypes are standalone HTML files with no backend, API, or setup 
 
 ---
 
-## Core Product Flows
+## Product Flows
 
 The first product layer focused on structure and behavior before visual polish.
 
-### Pre-onboarding
-Helps users understand the product promise before setup.
+### Pre-Onboarding Flow
+Helps users understand the product promise before setup — and routes them into the right path based on whether they already know which companies to track.
 
-![Pre-onboarding flow](./JobRadar-Pre-Onboarding-Flow.png)
+![Pre-Onboarding Flow](./JobRadar-Pre-Onboarding-Flow.png)
+
+### Onboarding Flow
+Collects companies, preferences, keywords, alerts, and review confirmation. Designed as a way for the user to teach the agent what to watch for.
+
+![Onboarding Flow](./JobRadar-Onboarding-Flow.png)
+
+### Main App Flow
+Defines the core SaaS navigation and user actions across all product screens.
+
+![Main App Flow](./JobRadar-Main-App-Flow.png)
+
+### Agent Activity / Trust Flow
+Shows what the agent checked, found, filtered, or failed to access — and how trust is built through transparency and control.
+
+![Agent Activity / Trust Flow](./JobRadar-Agent-Activity-Trust-Flow.png)
 
 ### Dashboard Flow
 Turns agent results into clear states and next actions.
 
 ![Dashboard Flow](./JobRadar-Dashboard-Flow.png)
 
-Full flow documentation, including **Onboarding**, **Main App**, and **Agent Activity / Trust** flows, is available in [CASE_STUDY.md](./CASE_STUDY.md).
 ---
 
 ## Prototype Layers
@@ -194,8 +208,17 @@ This prototype is designed to prove the product experience, not production readi
 
 ## Next Steps
 
-- refining the Matches and Job Detail experience
-- improving prototype visual consistency across states
-- expanding the local agent simulation with richer company behaviors
-- testing lightweight preference-learning from save / ignore actions
-- exploring a backend-backed MVP for monitored sources and persistent user data
+**Prototype improvements**
+- Visual consistency pass across all dashboard states
+- Ignore feedback affecting similar job scores on the next run
+- Force source error button for demo control
+- New-since-last-visit badge on matches
+
+**Real product**
+- Greenhouse and Lever JSON API integration — free, no scraping needed
+- n8n automation for daily digest alerts
+- Playwright fallback for custom career pages without an ATS
+
+**Further**
+- User accounts and persistent preferences
+- Company suggestion engine based on role and location criteria
