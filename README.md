@@ -110,6 +110,7 @@ The first layer defines how the product works before focusing on UI polish.
 Mapped flows include:
 
 Pre-onboarding: helps users understand the product promise before setup  
+
 - ## Pre-onboarding flow
 
 ![JobRadar onboarding flow](./JobRadar-Pre-Onboarding-Flow.png)
