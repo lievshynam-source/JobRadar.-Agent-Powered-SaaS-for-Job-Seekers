@@ -154,17 +154,17 @@ It currently simulates:
 
 ---
 
-## Human–AI triad
+## Human–AI triad workflow
+
+An experimental Human–AI collaboration model designed to simulate an early product team across product logic, UX structure, UI execution, and code-backed prototyping.
 
 | Role | Contribution |
 |---|---|
-| **Maryna Lievshyna** | Product Design Lead, product vision, UX direction, final decisions |
-| **ChatGPT** | Product logic support, UX structure, case study framing |
+| **Maryna Lievshyna** | Product vision, UX direction, final decisions |
+| **ChatGPT** | Product logic, flow structure, case study support |
 | **Claude + Cursor** | UI iteration, front-end prototyping, interactive prototype support |
 
-This project was built through a Human–AI triad workflow simulating early product collaboration across product logic, UX structure, UI iteration, and code-backed prototyping.
-
-I led the vision, made the final decisions, and used AI tools as product, design, and engineering support.
+The human directed the work and made the final calls. AI tools supported product logic, execution, and rapid iteration.
 
 ---
 
