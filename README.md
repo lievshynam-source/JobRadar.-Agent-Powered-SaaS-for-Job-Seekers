@@ -26,7 +26,7 @@ For employed professionals, privacy matters just as much as speed. They may be o
 
 Meanwhile, technical automation tools can help, but usually require setup skills that many users do not have.
 
-JobRadar explores a simpler alternative: a company-first job-tracking workflow for users who want a calmer and more focused search process.
+JobRadar explores a simpler alternative: job seekers choose the companies they want to monitor, and the agent tracks those sources for relevant roles.
 
 ---
 
